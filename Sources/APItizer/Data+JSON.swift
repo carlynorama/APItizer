@@ -1,11 +1,13 @@
 //
-//  JSONChecker.swift
-//  ActivityPubExplorer
+//  File.swift
+//  
 //
-//  Created by Labtanza on 11/5/22.
+//  Created by Carlyn Maw on 2/5/23.
 //
 
 import Foundation
+
+
 
 fileprivate struct NullableObject<Base: Decodable>: Decodable {
     public let value: Base?
@@ -20,10 +22,10 @@ fileprivate struct NullableObject<Base: Decodable>: Decodable {
     }
 }
 
-public extension RequestService {
+internal extension Data {
     
-    func fetchDictionary(from url:URL) async throws -> [String: Any]? {
-        let data = try await httpFetch(from: url)
+    func asDictionary() async throws -> [String: Any]? {
+        let data = self
         do {
             let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
             print(result)
@@ -34,41 +36,43 @@ public extension RequestService {
         }
     }
     
-    func fetchValue<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL) async throws -> SomeDecodable {
-        let data = try await httpFetch(from: url, debugLog: false)
+    func asValue<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, decoder:JSONDecoder = JSONDecoder()) async throws -> SomeDecodable {
+        let data = self
         let decoded = try decoder.decode(SomeDecodable.self, from: data)
         return decoded
     }
     
-    func fetchTransformedValue<SomeDecodable: Decodable, Transformed>(
+    func asTransformedValue<SomeDecodable: Decodable, Transformed>(
         ofType: SomeDecodable.Type,
-        from url:URL,
+        decoder:JSONDecoder = JSONDecoder(),
         transform: @escaping (SomeDecodable) throws -> Transformed
     ) async throws -> Transformed {
-        let decoded = try await fetchValue(ofType: ofType, from: url)
+        let data = self
+        let decoded = try await data.asValue(ofType: ofType, decoder: decoder)
         return try transform(decoded)
     }
     
-    func fetchOptional<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL) async throws -> SomeDecodable? {
-        let data = try await httpFetch(from: url)
-        let result = try JSONDecoder().decode(NullableObject<SomeDecodable>.self, from: data)
+    func asOptional<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, decoder:JSONDecoder = JSONDecoder()) async throws -> SomeDecodable? {
+        let data = self
+        let result = try decoder.decode(NullableObject<SomeDecodable>.self, from: data)
         return result.value
     }
     
-    func fetchCollection<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL) async throws -> [SomeDecodable?] {
-        let data = try await httpFetch(from: url)
+    func asCollection<SomeDecodable: Decodable>(ofType:SomeDecodable.Type) async throws -> [SomeDecodable?] {
+        let data = self
         let results = try JSONDecoder().decode([NullableObject<SomeDecodable>].self, from: data)
         return results.compactMap { $0.value }
     }
     
-    func fetchCollectionOfOptionals<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL) async throws -> [SomeDecodable?] {
-        let data = try await httpFetch(from: url, debugLog: false)
+    func asCollectionOfOptionals<SomeDecodable: Decodable>(ofType:SomeDecodable.Type) async throws -> [SomeDecodable?] {
+        let data = self
         let results = try JSONDecoder().decode([NullableObject<SomeDecodable>].self, from: data)
         return results.map { $0.value }
     }
     
     //from Ed
-    func verboseDecode<T:Decodable>(data:Data) -> T? {
+    func verboseDecode<T:Decodable>(decoder:JSONDecoder = JSONDecoder()) -> T? {
+        let data = self
     //    decoder.keyDecodingStrategy = .convertFromSnakeCase
       do {
           
@@ -93,4 +97,5 @@ public extension RequestService {
 
       return nil
     }
+    
 }
