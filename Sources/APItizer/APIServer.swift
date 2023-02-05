@@ -20,7 +20,7 @@ enum APIError: Error, CustomStringConvertible {
 }
 
 
-struct APIServer {
+public struct APIServer {
     
     //TODO: Sanitize Paths. Look for // and whether con cat strings have /
     
