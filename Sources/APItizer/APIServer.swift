@@ -19,40 +19,49 @@ public enum APIError: Error, CustomStringConvertible {
     }
 }
 
+public enum Scheme {
+    case https
+    
+    var component:String {
+        "https"
+    }
+    
+    var requestService:RequestService {
+        HTTPRequestService()
+    }
+    
+}
 
-public struct APIServer {
+public struct Endpoint {
+    let path: String
+    let queryItems: [URLQueryItem]
     
-    //TODO: Sanitize Paths. Look for // and whether con cat strings have /
-    
-    public struct Location {
-        let scheme:String
-        let host:URL
-        let apiBase:String?
-        
-        public init(scheme: String, host: URL, apiBase: String?) {
-            self.scheme = scheme
-            self.host = host
-            self.apiBase = apiBase
-        }
+    public init(path: String, queryItems: [URLQueryItem]) {
+        self.path = path
+        self.queryItems = queryItems
+    }
+}
+
+public protocol APIServer {
+    var scheme:Scheme { get }
+    var host:URL { get }
+    var apiBase:String? { get }
+    var version:String? { get }
+}
+
+public extension APIServer {
+    var name:String {
+        host.absoluteString
     }
     
-    public struct Endpoint {
-        let path: String
-        let queryItems: [URLQueryItem]
-        
-        public init(path: String, queryItems: [URLQueryItem]) {
-            self.path = path
-            self.queryItems = queryItems
-        }
-    }
+    //TODO:  a path sanitizer.
     
-    
-    public static func urlFrom(server:Location, path:String, usingAPIBase:Bool = false) throws -> URL {
+    public func urlFrom(path:String, usingAPIBase:Bool = false) throws -> URL {
         var components = URLComponents()
-        components.scheme = server.scheme
-        components.host = server.host.absoluteString
-        if server.apiBase != nil && usingAPIBase {
-            components.path = server.apiBase! + path
+        components.scheme = scheme.component
+        components.host = host.absoluteString
+        if apiBase != nil && usingAPIBase {
+            components.path = apiBase! + path
         } else {
             components.path = path
         }
@@ -64,16 +73,16 @@ public struct APIServer {
         return url
     }
     
-    public static func urlFrom(server: Location, endpoint:Endpoint, usingAPIBase:Bool = true) throws -> URL {
+    public func urlFrom(endpoint:Endpoint, usingAPIBase:Bool = true) throws -> URL {
         var components = URLComponents()
-        components.scheme = server.scheme
-        components.host = server.host.absoluteString
+        components.scheme = scheme.component
+        components.host = host.absoluteString
         print("host:\(components.host ?? "none")")
         
         //print("apiBase:\(components.host)")
         
-        if server.apiBase != nil && usingAPIBase {
-            components.path = server.apiBase! + endpoint.path
+        if apiBase != nil && usingAPIBase {
+            components.path = apiBase! + endpoint.path
         } else {
             components.path = endpoint.path
         }
@@ -90,21 +99,4 @@ public struct APIServer {
         return url
     }
     
-}
-
-
-public extension APIServer.Location {
-    
-    init?(host:String, apiBase:String?) {
-        guard let url = URL(string: host) else {
-            return nil
-        }
-        self.host = url
-        self.scheme = "https"
-        self.apiBase = apiBase
-    }
-    
-    var name:String {
-        self.host.absoluteString
-    }
 }

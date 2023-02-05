@@ -19,18 +19,26 @@ public enum RequestServiceError:Error, CustomStringConvertible {
     }
 }
 
-public actor RequestService {
-    internal let decoder = JSONDecoder()
-    internal let session = URLSession.shared
+public protocol RequestService {
+    func serverHello(from url:URL) async throws -> String
+    func fetchRawString(from:URL, encoding:String.Encoding) async throws -> String
+    func checkForValidResponse(_ response: URLResponse) async -> (isValid:Bool, mimeType:String?)
+    func fetch(from url:URL) async throws -> Data
+}
+
+struct HTTPRequestService:RequestService {
+    internal var session:URLSession
     
-    public init() {}
+    public init(session:URLSession = URLSession.shared) {
+        self.session = session
+    }
     
     //MARK: - Level One Fetch Requests (Hello World)
     
     public func serverHello(from url:URL) async throws -> String {
         let (_, response) = try await session.data(from: url)  //TODO: catch the error here
         //print(response)
-        let (isValid, mimeType) = checkForValidHTTP(response)
+        let (isValid, mimeType) = await checkForValidResponse(response)
         return "The url returns a \(isValid ? "valid":"invalid") HTTP response\(isValid ? " of type \(mimeType ?? "unknown")":".")"
     }
     
@@ -42,23 +50,22 @@ public actor RequestService {
         return string
     }
     
-    
     //MARK: - Generic HTTP Handling
-    internal func httpFetch(from url:URL, debugLog:Bool = false) async throws -> Data {
+    public func fetch(from url:URL) async throws -> Data {
         let (data, response) = try await session.data(from: url)  //TODO: catch the error here
        //print(response)
-        guard checkForValidHTTP(response).isValid else {
+        guard await checkForValidResponse(response).isValid else {
             throw RequestServiceError("Not valid HTTP")
         }
         
-        if debugLog {
-            let string = String(decoding: data, as: UTF8.self)
-            print(string)
-        }
+//        if debugLog {
+//            let string = String(decoding: data, as: UTF8.self)
+//            print(string)
+//        }
         return data
     }
     
-    internal func checkForValidHTTP(_ response:URLResponse) -> (isValid:Bool, mimeType:String?) {
+    public func checkForValidResponse(_ response:URLResponse) async -> (isValid:Bool, mimeType:String?) {
         guard let httpResponse = response as? HTTPURLResponse,
                     (200...299).contains(httpResponse.statusCode) else {
                     self.handleServerError(response)
@@ -68,7 +75,7 @@ public actor RequestService {
         return (true, httpResponse.mimeType)
     }
     
-    internal func handleServerError(_ response:URLResponse) {
+    func handleServerError(_ response:URLResponse) {
         print(response)
     }
     
