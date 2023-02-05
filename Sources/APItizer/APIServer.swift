@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum APIError: Error, CustomStringConvertible {
+public enum APIError: Error, CustomStringConvertible {
     case message(String)
-    var description: String {
+    public var description: String {
         switch self {
         case let .message(message): return message
         }
     }
-    init(_ message: String) {
+    fileprivate init(_ message: String) {
         self = .message(message)
     }
 }
@@ -24,19 +24,30 @@ public struct APIServer {
     
     //TODO: Sanitize Paths. Look for // and whether con cat strings have /
     
-    struct Location {
+    public struct Location {
         let scheme:String
         let host:URL
         let apiBase:String?
+        
+        public init(scheme: String, host: URL, apiBase: String?) {
+            self.scheme = scheme
+            self.host = host
+            self.apiBase = apiBase
+        }
     }
     
-    struct Endpoint {
+    public struct Endpoint {
         let path: String
         let queryItems: [URLQueryItem]
+        
+        public init(path: String, queryItems: [URLQueryItem]) {
+            self.path = path
+            self.queryItems = queryItems
+        }
     }
     
     
-    static func urlFrom(server:Location, path:String, usingAPIBase:Bool = false) throws -> URL {
+    public static func urlFrom(server:Location, path:String, usingAPIBase:Bool = false) throws -> URL {
         var components = URLComponents()
         components.scheme = server.scheme
         components.host = server.host.absoluteString
@@ -53,7 +64,7 @@ public struct APIServer {
         return url
     }
     
-    static func urlFrom(server: Location, endpoint:Endpoint, usingAPIBase:Bool = true) throws -> URL {
+    public static func urlFrom(server: Location, endpoint:Endpoint, usingAPIBase:Bool = true) throws -> URL {
         var components = URLComponents()
         components.scheme = server.scheme
         components.host = server.host.absoluteString
@@ -82,7 +93,7 @@ public struct APIServer {
 }
 
 
-extension APIServer.Location {
+public extension APIServer.Location {
     
     init?(host:String, apiBase:String?) {
         guard let url = URL(string: host) else {

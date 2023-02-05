@@ -7,32 +7,34 @@
 
 import Foundation
 
-enum RequestServiceError:Error, CustomStringConvertible {
+public enum RequestServiceError:Error, CustomStringConvertible {
     case message(String)
-    var description: String {
+    public var description: String {
         switch self {
         case let .message(message): return message
         }
     }
-    init(_ message: String) {
+    fileprivate init(_ message: String) {
         self = .message(message)
     }
 }
 
-actor RequestService {
+public actor RequestService {
     internal let decoder = JSONDecoder()
     internal let session = URLSession.shared
     
+    public init() {}
+    
     //MARK: - Level One Fetch Requests (Hello World)
     
-    func serverHello(from url:URL) async throws -> String {
+    public func serverHello(from url:URL) async throws -> String {
         let (_, response) = try await session.data(from: url)  //TODO: catch the error here
         //print(response)
         let (isValid, mimeType) = checkForValidHTTP(response)
         return "The url returns a \(isValid ? "valid":"invalid") HTTP response\(isValid ? " of type \(mimeType ?? "unknown")":".")"
     }
     
-    func fetchRawString(from:URL, encoding:String.Encoding = .utf8) async throws -> String {
+    public func fetchRawString(from:URL, encoding:String.Encoding = .utf8) async throws -> String {
         let (data, _) = try await session.data(from: from)
         guard let string = String(data: data, encoding: encoding) else {
             throw RequestServiceError("Got data, couldn't make a string with \(encoding)")

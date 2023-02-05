@@ -20,7 +20,7 @@ fileprivate struct NullableObject<Base: Decodable>: Decodable {
     }
 }
 
-extension RequestService {
+public extension RequestService {
     
     func fetchDictionary(from url:URL) async throws -> [String: Any]? {
         let data = try await httpFetch(from: url)
