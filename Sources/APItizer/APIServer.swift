@@ -54,9 +54,9 @@ public extension APIServer {
         host.absoluteString
     }
     
-    //TODO:  a path sanitizer.
+    //TODO: a path sanitizer.
     
-    public func urlFrom(path:String, usingAPIBase:Bool = false) throws -> URL {
+    func urlFrom(path:String, usingAPIBase:Bool = false) throws -> URL {
         var components = URLComponents()
         components.scheme = scheme.component
         components.host = host.absoluteString
@@ -73,7 +73,7 @@ public extension APIServer {
         return url
     }
     
-    public func urlFrom(endpoint:Endpoint, usingAPIBase:Bool = true) throws -> URL {
+    func urlFrom(endpoint:Endpoint, usingAPIBase:Bool = true) throws -> URL {
         var components = URLComponents()
         components.scheme = scheme.component
         components.host = host.absoluteString

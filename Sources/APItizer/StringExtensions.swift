@@ -14,7 +14,7 @@ public extension String {
     //    Text(item.listCrasher() ?? "Nothing to see").id(UUID()) <- Will need id() somewhere if view scrolls
     //}
     //Parses emoji's correctly by adding characterEncoding option.
-    public func parseAsHTML() -> AttributedString? {
+    func parseAsHTML() -> AttributedString? {
         let data = Data(self.utf8)
         return try? AttributedString(NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html,  .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil))
      }
@@ -23,7 +23,7 @@ public extension String {
     //List(ExampleText.harderHTMLTests, id:\.self) { item in
     //    Text(item.htmlToAttributedString()).id(UUID())  <-Will need id() somewhere if view scrolls
     //}
-    public func catchingParseAsHTML() -> AttributedString {
+    func catchingParseAsHTML() -> AttributedString {
         do {
             let data = Data(self.utf8)
             let result = try AttributedString(NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html,  .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil))
@@ -33,11 +33,11 @@ public extension String {
         }
     }
     
-    public func parseAsMarkdown() -> AttributedString? {
+    func parseAsMarkdown() -> AttributedString? {
         return try? AttributedString(markdown: self)
     }
     
-    public func catchingParseAsMarkdown() -> AttributedString {
+    func catchingParseAsMarkdown() -> AttributedString {
         do {
             return try AttributedString(markdown: self)
         } catch {
@@ -45,7 +45,7 @@ public extension String {
         }
     }
     
-    public func linkedText(url: URL) -> AttributedString {
+    func linkedText(url: URL) -> AttributedString {
         var attributes = AttributeContainer()
         attributes.link = url
 
