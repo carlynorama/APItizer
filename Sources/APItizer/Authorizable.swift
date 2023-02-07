@@ -11,10 +11,10 @@ import Foundation
 
 public protocol Authorizable {
     var token:String? { get }
-    func setToken(token:String)
-    func clearToken()
+//    func setToken(token:String)
+//    func clearToken()
     var isAuthorized:Bool { get }
-    func authorizedFetch(from:URL, token:String) async throws -> Data
+//    func authorizedFetch(from:URL, token:String) async throws -> Data
 }
 
 

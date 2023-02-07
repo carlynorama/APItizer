@@ -73,7 +73,7 @@ public struct HTTPRequestService:RequestService {
     }
     
     
-    static func buildRequest(for url:URL, with headers:Dictionary<String,String>? = nil, using method:Method? = nil, containing body:HTTPBody? = nil) -> URLRequest? {
+    public static func buildRequest(for url:URL, with headers:Dictionary<String,String>? = nil, using method:Method? = nil, containing body:HTTPBody? = nil) -> URLRequest? {
         var request = URLRequest(url: url)
         
         if let headers {
