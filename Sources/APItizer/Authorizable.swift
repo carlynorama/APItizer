@@ -12,16 +12,6 @@ import Foundation
 public protocol Authorizable {
     var token:String? { get }
     func setToken(token:String)
+    func clearToken()
     var isAuthorized:Bool { get }
-}
-
-extension Authorizable {
-    var isAuthorized:Bool {
-        token != nil
-    }
-    
-    func setToken(token:String) {
-        token = token
-    }
-    
 }
