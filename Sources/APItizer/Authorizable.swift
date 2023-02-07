@@ -20,9 +20,17 @@ public protocol Authorizable {
 
 extension Authorizable {
     
-    static func appendAuthorization(to dictionary:[String:String], tokenKey:String, token:String) -> [String:String] {
+//    static func appendAuthorization(to dictionary:[String:String], tokenKey:String, token:String) -> [String:String] {
+//        var copy = dictionary
+//        copy[tokenKey] = token
+//        return copy
+//    }
+    
+    //Authorization: Bearer our_access_token_here
+    
+    public func appendOAuthHeader(to dictionary:[String:String], token:String) -> [String:String] {
         var copy = dictionary
-        copy[tokenKey] = token
+        copy["Authorization"] = "Bearer \(token)"
         return copy
     }
 }
