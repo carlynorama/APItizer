@@ -8,6 +8,10 @@
 import Foundation
 
 public struct HTTPRequestService:RequestService {
+    public enum Method: String {
+        case delete = "DELETE", get = "GET", head = "HEAD", patch = "PATCH", post = "POST", put = "PUT"
+    }
+    
     internal var session:URLSession
     
     public init(session:URLSession = URLSession.shared) {
@@ -59,5 +63,41 @@ public struct HTTPRequestService:RequestService {
     func handleServerError(_ response:URLResponse) {
         print(response)
     }
+    
+    
+    static func request(for url:URL, with headers:Dictionary<String,String>? = nil, using method:Method? = nil, containing body:HTTPBody? = nil) -> URLRequest? {
+        var request = URLRequest(url: url)
+        
+        if let headers {
+            for (key, value) in headers {
+                request.setValue(key, forHTTPHeaderField: value)
+            }
+        }
+        
+        if let method {
+            request.httpMethod = method.rawValue
+        }
+        
+        if let body {
+            guard let bodyData = try? body.encode() else {
+                return nil
+            }
+            for (key, value) in body.additionalHeaders {
+                request.setValue(key, forHTTPHeaderField: value)
+            }
+            
+            request.httpBody = bodyData
+        }
+        
+        return request
+    }
+    
+//    public protocol TargetType {
+//        var path: String { get }
+//        var method: Method { get }
+//        var headers: [String: String]? { get }
+//        var queryItems: [(String, String)]? { get }
+//        var httpBody: Data? { get }
+//    }
     
 }

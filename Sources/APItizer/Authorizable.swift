@@ -14,4 +14,15 @@ public protocol Authorizable {
     func setToken(token:String)
     func clearToken()
     var isAuthorized:Bool { get }
+    func authorizedFetch(from:URL, token:String) async throws -> Data
+}
+
+
+extension Authorizable {
+    
+    static func appendAuthorization(to dictionary:[String:String], tokenKey:String, token:String) -> [String:String] {
+        var copy = dictionary
+        copy[tokenKey] = token
+        return copy
+    }
 }
