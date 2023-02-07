@@ -7,14 +7,14 @@
 
 import Foundation
 
-public enum RequestServiceError:Error, CustomStringConvertible {
+enum RequestServiceError:Error, CustomStringConvertible {
     case message(String)
     public var description: String {
         switch self {
         case let .message(message): return message
         }
     }
-    fileprivate init(_ message: String) {
+    init(_ message: String) {
         self = .message(message)
     }
 }

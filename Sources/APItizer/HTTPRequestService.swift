@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HTTPRequestService:RequestService {
+public struct HTTPRequestService:RequestService {
     internal var session:URLSession
     
     public init(session:URLSession = URLSession.shared) {

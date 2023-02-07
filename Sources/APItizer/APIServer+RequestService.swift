@@ -14,9 +14,9 @@ public extension APIServer {
     func fetchRawString(from:URL, encoding:String.Encoding) async throws -> String {
         try await scheme.requestService.fetchRawString(from: from, encoding: encoding)
     }
-    func checkForValidResponse(_ response: URLResponse) async -> (isValid:Bool, mimeType:String?) {
-        await scheme.requestService.checkForValidResponse(response)
-    }
+//    func checkForValidResponse(_ response: URLResponse) async -> (isValid:Bool, mimeType:String?) {
+//        await scheme.requestService.checkForValidResponse(response)
+//    }
     func fetch(from url:URL) async throws -> Data {
         try await scheme.requestService.fetch(from: url)
     }

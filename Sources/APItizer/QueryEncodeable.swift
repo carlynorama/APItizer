@@ -13,8 +13,15 @@ protocol QueryEncodable:Codable {
 }
 
 extension QueryEncodable {
+    //This is the fast brittle way
     func makeQueries() -> [URLQueryItem] {
-        let dict = Dictionary(uniqueKeysWithValues: Mirror(reflecting: foo).children.map{ ($0.label!, $0.value) })
-        
+        var queries:[URLQueryItem] = []
+        let dict = Dictionary(uniqueKeysWithValues: Mirror(reflecting: self).children.map{ ($0.label!, "\($0.value)") })
+        for (key, value) in dict {
+            if (value != "nil") {
+                queries.append(URLQueryItem(name: key, value: value))
+            }
+        }
+        return queries
     }
 }

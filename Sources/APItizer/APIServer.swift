@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 public enum APIError: Error, CustomStringConvertible {
     case message(String)
     public var description: String {
