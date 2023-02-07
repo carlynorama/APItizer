@@ -64,3 +64,20 @@ public extension QueryEncodable {
 //            return URLQueryItem(name: $0.label!, value: value)
 //        }
 //    }
+
+// Revisit Mirror using this?
+//var displayableOptions:[String] {
+//    let mirror = Mirror(reflecting: self)
+//    var itemsToDisplay:[String] = []
+//
+//    for child in mirror.children  {
+//        //print("key: \(child.label), value: \(child.value)")
+//        if child.value is ExpressibleByNilLiteral  {
+//            let typeDescription = object_getClass(child.value)?.description() ?? ""
+//            if !typeDescription.contains("Null") && !typeDescription.contains("Empty") {
+//                itemsToDisplay.append(child.label ?? "no_key")
+//            }
+//        }
+//    }
+//    return itemsToDisplay
+//}
