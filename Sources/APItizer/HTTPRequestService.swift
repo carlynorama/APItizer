@@ -64,6 +64,14 @@ public struct HTTPRequestService:RequestService {
         print(response)
     }
     
+    func fetch(urlRequest:URLRequest) async throws -> Data {
+        let (data, response) = try await session.data(for: urlRequest)
+        guard await checkForValidResponse(response).isValid else {
+            throw RequestServiceError("Not valid HTTP")
+        }
+        return data
+    }
+    
     
     static func request(for url:URL, with headers:Dictionary<String,String>? = nil, using method:Method? = nil, containing body:HTTPBody? = nil) -> URLRequest? {
         var request = URLRequest(url: url)
@@ -91,13 +99,5 @@ public struct HTTPRequestService:RequestService {
         
         return request
     }
-    
-//    public protocol TargetType {
-//        var path: String { get }
-//        var method: Method { get }
-//        var headers: [String: String]? { get }
-//        var queryItems: [(String, String)]? { get }
-//        var httpBody: Data? { get }
-//    }
     
 }
