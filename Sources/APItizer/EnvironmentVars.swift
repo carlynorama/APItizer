@@ -19,8 +19,8 @@ enum EnvironmentVars {
     }
     
     static func loadDotEnv() throws {
-        if let url = Bundle.main.url(forResource: ".env") {
-            loadDotEnv(url: url)
+        if let url = Bundle.main.url(forResource: ".env", withExtension: nil) {
+            try loadDotEnv(url: url)
         } else {
             //TODO: throw
             fatalError("no env file")
