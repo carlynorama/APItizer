@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DonEnv {
+public enum DotEnv {
     
     //should prefer ProcessInfo.processInfo.environment["KEY"]
     static func getEnvironmentVar(_ key: String) -> String? {
@@ -18,7 +18,7 @@ enum DonEnv {
         setenv(key, value, overwrite ? 1 : 0)
     }
     
-    static func loadDotEnv() throws {
+    public static func loadDotEnv() throws {
         if let url = Bundle.main.url(forResource: ".env", withExtension: nil) {
             try loadDotEnv(url: url)
         } else {
@@ -27,7 +27,7 @@ enum DonEnv {
         }
     }
     
-    static func loadDotEnv(url:URL) throws {
+    public static func loadDotEnv(url:URL) throws {
         //let url = URL(fileURLWithPath: ".env")
         guard let envString = try? String(contentsOf: url) else {
            fatalError("no env file data")

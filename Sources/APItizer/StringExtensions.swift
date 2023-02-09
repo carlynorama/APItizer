@@ -7,6 +7,7 @@
 //
 import SwiftUI
 
+// print(String(data: data, encoding: .utf8)!)
 
 public extension String {
     //Usage
