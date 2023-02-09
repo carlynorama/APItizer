@@ -8,14 +8,14 @@
 import Foundation
 
 
-public enum APIError: Error, CustomStringConvertible {
+enum APIError: Error, CustomStringConvertible {
     case message(String)
     public var description: String {
         switch self {
         case let .message(message): return message
         }
     }
-    fileprivate init(_ message: String) {
+    init(_ message: String) {
         self = .message(message)
     }
 }
@@ -42,6 +42,8 @@ public struct Endpoint {
         self.queryItems = queryItems
     }
 }
+
+
 
 public protocol APIServer {
     var scheme:Scheme { get }

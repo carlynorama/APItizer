@@ -5,15 +5,21 @@
 //  Created by Carlyn Maw on 2/7/23.
 //
 
+//TODO: Go back to using Mirror?
+
 import Foundation
 
 
 public protocol QueryEncodable:Codable {
     func makeQueries() -> [URLQueryItem]
+    
+    //use with "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+    func makeFormData() throws -> Data
 }
 
 public extension QueryEncodable {
-    
+    //Always ignores empty and nil values.
+    //Arrays are of the forma key=v1,v2,v3
     func makeQueries() -> [URLQueryItem] {
         let encoder = JSONEncoder()
         func encode<T>(_ value: T) throws -> [String: Any] where T : Encodable {
@@ -26,12 +32,40 @@ public extension QueryEncodable {
         }
         var queries:[URLQueryItem] = []
         for (key, value) in dictionary {
-            queries.append(URLQueryItem(name: key, value: "\(value)"))
+            var stringValue = "\(value)"
+            if stringValue == "(\n)" { stringValue = "" }
+            if stringValue.hasPrefix("(") { stringValue = stringValue.trimmingCharacters(in: CharacterSet(charactersIn: "()")).removingCharacters(in: .whitespacesAndNewlines)}
+            //print(stringValue)
+            if !stringValue.isEmpty  {
+                queries.append(URLQueryItem(name: key, value: "\(stringValue)"))
+            }
         }
         
         return queries
     }
+    
+    func makeFormData() throws -> Data {
+        return Data(try makeFormString().utf8)
+    }
+    
+    func makeFormString() throws -> String {
+        let pieces = makeQueries().map(self.urlEncode)
+        let bodyString = pieces.joined(separator: "&")
+        return bodyString
+    }
+
+    private func urlEncode(_ queryItem: URLQueryItem) -> String {
+        let name = urlEncode(queryItem.name)
+        let value = urlEncode(queryItem.value ?? "")
+        return "\(name)=\(value)"
+    }
+
+    private func urlEncode(_ string: String) -> String {
+        let allowedCharacters = CharacterSet.alphanumerics
+        return string.addingPercentEncoding(withAllowedCharacters: allowedCharacters) ?? ""
+    }
 }
+
 
 
 //Failed but interesting:

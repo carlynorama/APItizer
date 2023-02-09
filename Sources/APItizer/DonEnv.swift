@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum EnvironmentVars {
+enum DonEnv {
     
     //should prefer ProcessInfo.processInfo.environment["KEY"]
     static func getEnvironmentVar(_ key: String) -> String? {
