@@ -20,18 +20,24 @@ public enum DotEnv {
     
     public static func loadDotEnv() throws {
         if let url = Bundle.main.url(forResource: ".env", withExtension: nil) {
-            try loadDotEnv(url: url)
+            try loadSecretsFile(url: url)
+            
+        } else if let envString = try? String(contentsOf: URL(fileURLWithPath: ".env")) {
+            loadIntoEnv(envString)
         } else {
-            //TODO: throw
-            fatalError("no env file")
+            fatalError("can't find .env file.")
         }
     }
     
-    public static func loadDotEnv(url:URL) throws {
+    public static func loadSecretsFile(url:URL) throws {
         //let url = URL(fileURLWithPath: ".env")
         guard let envString = try? String(contentsOf: url) else {
            fatalError("no env file data")
         }
+        loadIntoEnv(envString)
+    }
+    
+    private static func loadIntoEnv(_ envString:String) {
         envString
             .trimmingCharacters(in: .newlines)
             .split(separator: "\n")
