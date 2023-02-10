@@ -14,7 +14,7 @@ public protocol QueryEncodable:Codable {
     func makeQueries() -> [URLQueryItem]
     
     //use with "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
-    func makeFormData() throws -> Data
+    func makeURLEncodedData() throws -> Data
 }
 
 public extension QueryEncodable {
@@ -44,11 +44,19 @@ public extension QueryEncodable {
         return queries
     }
     
-    func makeFormData() throws -> Data {
-        return Data(try makeFormString().utf8)
+    static var headerForEncoded:[String:String] {
+        ["Content-Type": "application/x-www-form-urlencoded; charset=utf-8"]
     }
     
-    func makeFormString() throws -> String {
+    var headerForEncoded:[String:String] {
+        Self.headerForEncoded
+    }
+    
+    func makeURLEncodedData() throws -> Data {
+        return Data(try makeURLEncodedString().utf8)
+    }
+    
+    func makeURLEncodedString() throws -> String {
         let pieces = makeQueries().map(self.urlEncode)
         let bodyString = pieces.joined(separator: "&")
         return bodyString
