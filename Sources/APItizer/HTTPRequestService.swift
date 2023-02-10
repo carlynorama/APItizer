@@ -78,7 +78,6 @@ public struct HTTPRequestService:RequestService {
         
         if let headers {
             for (key, value) in headers {
-                print("setting key \(key) to \(value)")
                 request.setValue(value, forHTTPHeaderField:key)
             }
         }
@@ -88,52 +87,9 @@ public struct HTTPRequestService:RequestService {
         }
         
         if let data {
-//            guard let bodyData = try? body.encode() else {
-//                return nil
-//            }
-//            for (key, value) in body.additionalHeaders {
-//                request.setValue(value, forHTTPHeaderField: key)
-//            }
             request.httpBody = data
         }
         
         return request
     }
-    
-    
-    
-    
 }
-
-//
-//let Url = String(format: "http://10.10.10.53:8080/sahambl/rest/sahamblsrv/userlogin")
-//    guard let serviceUrl = URL(string: Url) else { return }
-//    let parameters: [String: Any] = [
-//        "request": [
-//                "xusercode" : "YOUR USERCODE HERE",
-//                "xpassword": "YOUR PASSWORD HERE"
-//        ]
-//    ]
-//    var request = URLRequest(url: serviceUrl)
-//    request.httpMethod = "POST"
-//    request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
-//    guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-//        return
-//    }
-//    request.httpBody = httpBody
-//    request.timeoutInterval = 20
-//    let session = URLSession.shared
-//    session.dataTask(with: request) { (data, response, error) in
-//        if let response = response {
-//            print(response)
-//        }
-//        if let data = data {
-//            do {
-//                let json = try JSONSerialization.jsonObject(with: data, options: [])
-//                print(json)
-//            } catch {
-//                print(error)
-//            }
-//        }
-//    }.resume()
-//}
