@@ -50,16 +50,16 @@ public struct Authentication {
         return Self(account: account, service: service, tokenKey: tokenKey)
     }
     
-    static public func makeFromEnvironment(accountName:String, service:String, tokenKey:String, secretsFile:URL? = nil) throws -> Self {
+    static public func makeFromEnvironment(accountName:String, service:String, tokenKey:String) throws -> Self {
 
         var tokenString = ProcessInfo.processInfo.environment[tokenKey]
         
         if (tokenString == nil) {
-            if secretsFile == nil {
-                try Self.loadEnvironment()
-            } else {
-                try Self.loadEnvironment(url: secretsFile)
-            }
+            //if secretsFile == nil {
+            try Self.loadIntoEnvironment()
+            //} else {
+            //    try Self.loadIntoEnvironment(url: secretsFile)
+            //}
             tokenString = ProcessInfo.processInfo.environment[tokenKey]
             if (tokenString == nil) {
                 throw APIError("Unable to find a token in the environment.")
@@ -102,13 +102,10 @@ public struct Authentication {
 //        return new
 //    }
     
-    static func loadEnvironment(url:URL? = nil) throws {
+    static func loadIntoEnvironment(url:URL? = nil) throws {
         do {
-            if let url { try DotEnv.loadDotEnv(url:url) }
-            else {
-                //TODO: Bundle may not be a thing if this is a script?
-                if let defaultURL = Bundle.main.url(forResource: ".env", withExtension: nil) {
-                    try DotEnv.loadDotEnv(url:defaultURL) }}
+            if let url { try DotEnv.loadSecretsFile(url:url) }
+            else { try DotEnv.loadDotEnv() }
         } catch {
             throw APIError(error.localizedDescription)
         }
