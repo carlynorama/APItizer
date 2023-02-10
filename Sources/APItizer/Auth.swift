@@ -36,14 +36,14 @@ public struct Authentication {
         let serviceKey = "\(keyBase)\(service)"
         let tokenKey = "\(keyBase)\(account)_TOKEN"
         
-        print(accountKey, serviceKey)
+        //print(accountKey, serviceKey)
         
         let dataOut = KeyChainHandler.readAccessToken(service: serviceKey, account: accountKey)
         if let dataOut {
-            print("found it.")
+            //print("found it.")
             DotEnv.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
         } else {
-            print("did not find it.")
+            //print("did not find it.")
            throw APIError("Could not locate access token in keychain.")
         }
         
@@ -116,7 +116,7 @@ public struct Authentication {
 extension Authentication {
     
     private func fetchToken() throws -> String {
-        print("\(tokenKey)")
+        //print("\(tokenKey)")
         guard let token = ProcessInfo.processInfo.environment[tokenKey] else {
             throw APIError("No token in environment")
         }
