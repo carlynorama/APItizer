@@ -65,7 +65,7 @@ public struct Authentication {
                 throw APIError("Unable to find a token in the environment.")
             }
         }
-        return Self(account:accountName, service:service)
+        return Self(account:accountName, service:service, tokenKey: tokenKey)
     }
     
     static public func makeWithTokenInhand(token:String, account:String, service:String, keyBase:String = Authentication.defaultKeyBase) throws -> Self {
