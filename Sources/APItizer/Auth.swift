@@ -5,14 +5,7 @@
 //  Created by Carlyn Maw on 2/7/23.
 //
 
-////"tipsyrobot"
-//mutating public func loadTokenFromKeyChain(for account:String) {
-//    if let readToken = readTokenFromKeyChain(accountKey: account) {
-//        putTokenInEnvironment(token: readToken, tokenKey: tokenKey)
-//    }
-//}
-
-//TODO Wrap KeyChain items in #if availalbe
+//TODO Wrap KeyChain & Bundle items in #if availalbe
 
 import Foundation
 
@@ -39,26 +32,34 @@ public struct Authentication {
     }
     
     static public func makeFromKeyChain(account:String, service:String, keyBase:String = Authentication.defaultKeyBase) throws -> Self {
-        let accountKey = "\(keyBase)_\(account)"
-        let serviceKey = "\(keyBase)_\(service)"
-        let tokenKey = "\(keyBase)_\(account)_TOKEN"
+        let accountKey = "\(keyBase)\(account)"
+        let serviceKey = "\(keyBase)\(service)"
+        let tokenKey = "\(keyBase)\(account)_TOKEN"
+        
+        print(accountKey, serviceKey)
         
         let dataOut = KeyChainHandler.readAccessToken(service: serviceKey, account: accountKey)
         if let dataOut {
+            print("found it.")
             DotEnv.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
         } else {
+            print("did not find it.")
            throw APIError("Could not locate access token in keychain.")
         }
         
-        return Self(account: account, service: service)
+        return Self(account: account, service: service, tokenKey: tokenKey)
     }
     
-    static public func makeFromEnvironment(accountName:String, service:String, tokenKey:String) throws -> Self {
+    static public func makeFromEnvironment(accountName:String, service:String, tokenKey:String, secretsFile:URL? = nil) throws -> Self {
 
         var tokenString = ProcessInfo.processInfo.environment[tokenKey]
         
         if (tokenString == nil) {
-            try Self.loadEnvironment()
+            if secretsFile == nil {
+                try Self.loadEnvironment()
+            } else {
+                try Self.loadEnvironment(url: secretsFile)
+            }
             tokenString = ProcessInfo.processInfo.environment[tokenKey]
             if (tokenString == nil) {
                 throw APIError("Unable to find a token in the environment.")
@@ -105,6 +106,7 @@ public struct Authentication {
         do {
             if let url { try DotEnv.loadDotEnv(url:url) }
             else {
+                //TODO: Bundle may not be a thing if this is a script?
                 if let defaultURL = Bundle.main.url(forResource: ".env", withExtension: nil) {
                     try DotEnv.loadDotEnv(url:defaultURL) }}
         } catch {
