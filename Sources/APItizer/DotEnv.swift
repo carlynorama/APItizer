@@ -48,6 +48,7 @@ public enum DotEnv {
 
         func addToEnv(result:Array<String>) {
             if result.count == 2  {
+                print(result[0], result[1])
                 setEnvironment(key: result[0], value: result[1], overwrite: true)
             } else {
                 //item would of had to have contained more than 1 "=" or none at all. I'd like to know about that for now.

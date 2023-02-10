@@ -116,6 +116,7 @@ public struct Authentication {
 extension Authentication {
     
     private func fetchToken() throws -> String {
+        print("\(tokenKey)")
         guard let token = ProcessInfo.processInfo.environment[tokenKey] else {
             throw APIError("No token in environment")
         }
