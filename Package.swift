@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "APItizer",
-    platforms: [ .macOS(.v12),
+    platforms: [ .macOS(.v13),
                  .iOS(.v15),
     ],
     products: [

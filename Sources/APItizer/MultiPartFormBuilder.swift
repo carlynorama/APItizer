@@ -11,6 +11,10 @@ import Foundation
 //https://stackoverflow.com/questions/55361096/upload-image-with-multipart-form-data-only-in-swift-4-2
 //https://stackoverflow.com/questions/4526273/what-does-enctype-multipart-form-data-mean/28380690#28380690
 
+public protocol FormBodyEncodeable {
+    func makeFormBody() -> MultiPartFormBuilder?
+}
+
 public struct MultiPartFormBuilder {
     let boundary = UUID().uuidString
     private var data:Data //vs NSMutableData?
@@ -19,19 +23,23 @@ public struct MultiPartFormBuilder {
         data = Data()
     }
     
-    var header:[String:String] {
-        ["Content-Type":"multipart/form-data; boundary=\(boundary)"]
+    public var hasData:Bool {
+        !data.isEmpty
+    }
+    
+    public var contentTypeHeader:String {
+        "multipart/form-data; boundary=\(boundary)"
     }
     
     private var termination:Data {
         "\r\n--\(boundary)--\r\n".data(using: .utf8)!
     }
     
-    var terminatedPayload:Data {
+    public var terminatedPayload:Data {
         data.appending(termination)
     }
     
-    var currentState:Data {
+    public var currentState:Data {
         data
     }
     

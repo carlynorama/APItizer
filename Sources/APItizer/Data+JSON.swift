@@ -22,14 +22,26 @@ fileprivate struct NullableObject<Base: Decodable>: Decodable {
     }
 }
 
-internal extension Data {
+public extension Data {
     
     func asDictionary() async throws -> [String: Any]? {
         let data = self
         do {
             let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
             print(result)
-            return result as? [String:AnyObject]
+            return result as? [String:Any] //ANy or AnyObject
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    func asFlatDictionary() async throws -> [String: String]? {
+        let data = self
+        do {
+            let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+            print(result)
+            return result as? [String:String] //ANy or AnyObject
         } catch {
             print(error)
             return nil
