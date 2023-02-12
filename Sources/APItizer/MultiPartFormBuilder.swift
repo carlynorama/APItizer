@@ -17,7 +17,7 @@ public protocol FormBodyEncodeable {
 
 public struct MultiPartFormBuilder {
     let boundary = UUID().uuidString
-    private var data:Data //vs NSMutableData?
+    private var data:Data
     
     public init() {
         data = Data()
@@ -36,11 +36,15 @@ public struct MultiPartFormBuilder {
     }
     
     public var terminatedPayload:Data {
-        data.appending(termination)
+        data.appending(termination) as Data
+    }
+    
+    public var terminatedPayloadString:String? {
+        String(data:data.appending(termination) as Data, encoding:.utf8)
     }
     
     public var currentState:Data {
-        data
+        data as Data
     }
     
     mutating public func appendTextField(named name: String, value: String) {
@@ -96,7 +100,7 @@ extension Data {
         }
     }
     
-    func appending(_ string: String, using encoding: String.Encoding = .utf8) throws -> Data? {
+    func appending(_ string: String, using encoding: String.Encoding = .utf8) throws -> Self? {
         if let data = string.data(using: encoding) {
             var copy = self
             copy.append(data)
@@ -106,7 +110,7 @@ extension Data {
         }
     }
     
-    func appending(_ newData:Data) -> Data {
+    func appending(_ newData:Data) -> Self {
         var copy = self
         copy.append(newData)
         return copy
