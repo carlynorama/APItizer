@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension APIServer {
+public extension APIClient {
     func serverHello(from url:URL) async throws -> String {
         try await scheme.requestService.serverHello(from: url)
     }

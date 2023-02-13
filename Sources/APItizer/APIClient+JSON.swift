@@ -8,7 +8,7 @@
 import Foundation
 
 
-public extension APIServer {
+public extension APIClient {
     
     //MARK: Generic Object Fetcher
     
@@ -40,7 +40,7 @@ public extension APIServer {
     }
     
 }
-public extension APIServer {
+public extension APIClient {
     func fetchCollectionOfOptionals<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL) async throws -> [SomeDecodable?] {
         try await scheme.requestService.fetch(from: url).asCollectionOfOptionals(ofType: ofType)
     }
