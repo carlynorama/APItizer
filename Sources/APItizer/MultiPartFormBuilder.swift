@@ -106,7 +106,7 @@ extension Data {
             copy.append(data)
             return copy
         } else {
-            throw APIError("Failed to append data from string.")
+            throw APItizerError("Failed to append data from string.")
         }
     }
     
