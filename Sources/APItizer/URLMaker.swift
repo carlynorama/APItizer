@@ -1,0 +1,103 @@
+//
+//  File.swift
+//  
+//
+//  Created by Carlyn Maw on 2/13/23.
+//
+
+import Foundation
+
+
+enum URLMaker {
+    
+    static func urlAssembler(_ pathParts:[String]) -> URL? {
+        return URL(string:assemblePath(pathParts, prependSeparator: false))
+    }
+    
+    static func urlAssembler(_ pathParts:String...) -> URL? {
+        return URL(string:assemblePath(pathParts, prependSeparator: false))
+    }
+
+    static func pathAssembler(_ pathParts:String...) -> String? {
+        return URL(string:assemblePath(pathParts))?.absoluteString
+    }
+    
+    static func pathAssembler(_ pathParts:[String]) -> String? {
+        return URL(string:assemblePath(pathParts))?.absoluteString
+    }
+
+    static func urlAssembler(url:URL, _ pathParts:String...) -> URL? {
+       let urlString = url.absoluteString
+        var mPathParts = pathParts
+        mPathParts.insert(urlString, at:0)
+        return URL(string:assemblePath(mPathParts, prependSeparator: false))
+    }
+
+    static func urlAssembler(baseString:String, _ pathParts:String...) -> URL? {
+        var mPathParts = pathParts
+        mPathParts.insert(baseString, at:0)
+        return URL(string:assemblePath(mPathParts, prependSeparator: false))
+    }
+    
+    static private func assemblePath(_ pathParts:[String], prependSeparator:Bool = true) -> String {
+        var joined = prependSeparator ? "/" : ""
+            let trimmed:[String] = pathParts.compactMap({
+                let part = String($0.trimmingCharacters(in: CharacterSet(charactersIn: "/")))
+                if !part.isEmpty { return part }
+                else { return nil }
+            })
+        joined += trimmed.joined(separator: "/")
+        return joined
+    }
+
+
+    static func urlFromPath(scheme:String = "https", host:String, path:String, port:Int? = nil) throws -> URL {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        if let port  { components.port = port }
+
+        components.path = path
+        
+        guard let url = components.url else {
+            throw APItizerError("Invalid url for path")
+        }
+        return url
+    }
+
+    static func urlFromPathComponents(scheme:String = "https", host:String, components pathParts:[String], port:Int? = nil) throws -> URL {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        if let port  { components.port = port }
+
+        components.path = assemblePath(pathParts)
+        
+        guard let url = components.url else {
+            throw APItizerError("Invalid url for path")
+        }
+        return url
+    }
+
+
+
+    static func urlFromEndpoint(scheme:String = "https", host:String, apiBase:String = "", endpoint:Endpoint, port:Int? = nil) throws -> URL {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        if let port  { components.port = port }
+
+        components.path = assemblePath([apiBase, endpoint.path], prependSeparator: false)
+
+        if !endpoint.queryItems.isEmpty {
+            components.queryItems = endpoint.queryItems
+        }
+        
+        guard let url = components.url else {
+            print("components:\(components)")
+            throw APItizerError("Invalid url for endpoint")
+        }
+        return url
+    }
+    
+}

@@ -44,7 +44,7 @@ public struct Authentication {
             EnvironmentLoading.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
         } else {
             //print("did not find it.")
-           throw APItizerError("Could not locate access token in keychain.")
+           throw AuthorizableError("Could not locate access token in keychain.")
         }
         
         return Self(account: account, service: service, tokenKey: tokenKey)
@@ -62,7 +62,7 @@ public struct Authentication {
             //}
             tokenString = ProcessInfo.processInfo.environment[tokenKey]
             if (tokenString == nil) {
-                throw APItizerError("Unable to find a token in the environment.")
+                throw AuthorizableError("Unable to find a token in the environment.")
             }
         }
         return Self(account:accountName, service:service, tokenKey: tokenKey)
@@ -79,7 +79,7 @@ public struct Authentication {
     static func secretPushToKeychain(account:String, service:String, keyBase:String = Authentication.defaultKeyBase, token:String) throws {
         let accountKey = "\(keyBase)_\(account)"
         let serviceKey = "\(keyBase)_\(service)"
-        let tokenKey = "\(keyBase)_\(account)_TOKEN"
+        //let tokenKey = "\(keyBase)_\(account)_TOKEN"
         
         let dataIn = Data(token.utf8)
         KeyChainHandler.saveAccessToken(dataIn, service: serviceKey, account: accountKey)
@@ -107,7 +107,7 @@ public struct Authentication {
             if let url { try EnvironmentLoading.loadSecretsFile(url:url) }
             else { try EnvironmentLoading.loadDotEnv() }
         } catch {
-            throw APItizerError(error.localizedDescription)
+            throw AuthorizableError(error.localizedDescription)
         }
     }
 }
@@ -115,10 +115,10 @@ public struct Authentication {
 
 extension Authentication {
     
-    private func fetchToken() throws -> String {
+    func fetchToken() throws -> String {
         //print("\(tokenKey)")
         guard let token = ProcessInfo.processInfo.environment[tokenKey] else {
-            throw APItizerError("No token in environment")
+            throw AuthorizableError("No token in environment")
         }
         return token
     }
@@ -131,11 +131,11 @@ extension Authentication {
         "\(keyBase)_\(service)"
     }
     
-    public func appendAuthHeader(to dictionary:[String:String]) throws -> [String:String] {
-        var copy = dictionary
-        copy["Authorization"] = "Bearer \(try fetchToken())"
-        return copy
-    }
+//    public func appendAuthHeader(to dictionary:[String:String]) throws -> [String:String] {
+//        var copy = dictionary
+//        copy["Authorization"] = "Bearer \(try fetchToken())"
+//        return copy
+//    }
     
     
     public func updateTokenInKeyChain(token:String) {
