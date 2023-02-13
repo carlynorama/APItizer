@@ -41,10 +41,10 @@ public struct Authentication {
         let dataOut = KeyChainHandler.readAccessToken(service: serviceKey, account: accountKey)
         if let dataOut {
             //print("found it.")
-            DotEnv.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
+            EnvironmentLoading.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
         } else {
             //print("did not find it.")
-           throw APIError("Could not locate access token in keychain.")
+           throw APItizerError("Could not locate access token in keychain.")
         }
         
         return Self(account: account, service: service, tokenKey: tokenKey)
@@ -62,7 +62,7 @@ public struct Authentication {
             //}
             tokenString = ProcessInfo.processInfo.environment[tokenKey]
             if (tokenString == nil) {
-                throw APIError("Unable to find a token in the environment.")
+                throw APItizerError("Unable to find a token in the environment.")
             }
         }
         return Self(account:accountName, service:service, tokenKey: tokenKey)
@@ -70,7 +70,7 @@ public struct Authentication {
     
     static public func makeWithTokenInhand(token:String, account:String, service:String, keyBase:String = Authentication.defaultKeyBase) throws -> Self {
         let tokenKey = "\(keyBase)_\(account)_TOKEN"
-        DotEnv.setEnvironment(key: tokenKey, value: token)
+        EnvironmentLoading.setEnvironment(key: tokenKey, value: token)
         
         return Self(account:account, service:service, keyBase: keyBase, tokenKey: tokenKey)
         
@@ -104,10 +104,10 @@ public struct Authentication {
     
     static func loadIntoEnvironment(url:URL? = nil) throws {
         do {
-            if let url { try DotEnv.loadSecretsFile(url:url) }
-            else { try DotEnv.loadDotEnv() }
+            if let url { try EnvironmentLoading.loadSecretsFile(url:url) }
+            else { try EnvironmentLoading.loadDotEnv() }
         } catch {
-            throw APIError(error.localizedDescription)
+            throw APItizerError(error.localizedDescription)
         }
     }
 }
@@ -118,7 +118,7 @@ extension Authentication {
     private func fetchToken() throws -> String {
         //print("\(tokenKey)")
         guard let token = ProcessInfo.processInfo.environment[tokenKey] else {
-            throw APIError("No token in environment")
+            throw APItizerError("No token in environment")
         }
         return token
     }
