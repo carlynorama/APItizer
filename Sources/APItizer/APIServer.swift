@@ -7,19 +7,6 @@
 
 import Foundation
 
-
-enum APIError: Error, CustomStringConvertible {
-    case message(String)
-    public var description: String {
-        switch self {
-        case let .message(message): return message
-        }
-    }
-    init(_ message: String) {
-        self = .message(message)
-    }
-}
-
 public enum Scheme {
     case https
     
@@ -70,7 +57,7 @@ public extension APIServer {
         }
         
         guard let url = components.url else {
-            throw APIError("Invalid url for path")
+            throw APItizerError("Invalid url for path")
         }
         print(url)
         return url
@@ -96,7 +83,7 @@ public extension APIServer {
         
         guard let url = components.url else {
             print("components:\(components)")
-            throw APIError("Invalid url for endpoint")
+            throw APItizerError("Invalid url for endpoint")
         }
         print(url)
         return url
