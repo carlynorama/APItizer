@@ -17,8 +17,6 @@ public protocol APIService {
     var defaultBasePath:String? { get }
 }
 
-
-
 public extension APIService {
     var name:String {
         serverHost.absoluteString
@@ -63,7 +61,7 @@ public extension APIService {
 
     func urlFromEndpoint(endpoint:Endpoint, prependBasePath:Bool = true) throws -> URL {
         var basePath = ""
-        if prependBasePath  { let basePath = defaultAPIBase ?? "" }
+        if prependBasePath  { basePath = defaultAPIBase ?? "" }
         return try URLMaker.urlFromEndpoint(scheme:serverScheme.component, host: serverHost.absoluteString, apiBase:basePath, endpoint:endpoint, port:serverPort)
     }
     
