@@ -1,11 +1,13 @@
 //
-//  File.swift
+//  KeyChainHandler.swift
 //  
 //
 //  Created by Carlyn Maw on 2/7/23.
 //
 // https://www.andyibanez.com/posts/using-ios-keychain-swift/
 // https://swiftsenpai.com/development/persist-data-using-keychain/
+
+// TODO: What happens in Linux
 
 import Foundation
 
