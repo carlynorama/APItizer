@@ -25,11 +25,11 @@ public struct MinimalAttachable:Attachable {
     public static func makeFromFile(url:URL, limitTypes uttypes: [UTType] = []) throws -> MinimalAttachable {
         if !uttypes.isEmpty {
             guard url.pointsToItemOfType(uttypes: uttypes) else {
-                throw APIError("MinimalAttachable: Does not conform to allowed types.")
+                throw APItizerError("MinimalAttachable: Does not conform to allowed types.")
             }
         }
         guard let data = try? Data(contentsOf: url) else {
-            throw APIError("MinimalAttachable:No data for the file at the location given.")
+            throw APItizerError("MinimalAttachable:No data for the file at the location given.")
         }
         let mimeType = url.mimeType()
         let ext = url.pathExtension
