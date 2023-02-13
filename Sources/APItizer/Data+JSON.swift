@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Data+JSON.swift
+//
 //
 //  Created by Carlyn Maw on 2/5/23.
 //
