@@ -12,11 +12,13 @@ import Foundation
 //request service type before knocking yourself out. Looks like URLRequest will just ignore HTTP
 //related content if it isnt http.
 
-extension APIService where Self:Authorizable {
+public extension APIService where Self:Authorizable {
     
     func addAuth(request: inout URLRequest) throws {
-        if let authentication {
-            request.setValue("Bearer \(try authentication.fetchToken())", forHTTPHeaderField: "Authorization")
+        print(self)
+        print("addAuth: hasValidToken \(self.hasValidToken)")
+        if let auth = self.authentication {
+            request.setValue("Bearer \(try auth.fetchToken())", forHTTPHeaderField: "Authorization")
         } else {
             throw AuthorizableError("No authorizations defined.")
         }
@@ -36,6 +38,20 @@ extension APIService where Self:Authorizable {
         //request.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         return try await requestService.postData(urlRequest: request, data: dataToSend!)
+
+    }
+    
+    //using async upload, see APing for manual body example.
+    func post_URLEncoded(baseUrl:URL, dataToSend:Data, withAuth:Bool = true) async throws -> Data {
+        //cachePolicy: URLRequest.CachePolicy, timeoutInterval: TimeInterval
+        var request = URLRequest(url: baseUrl)
+        request.httpMethod = "POST"
+        if withAuth { try addAuth(request: &request) }
+
+        //Uneeded b/c this appears to be the default.
+        //request.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        return try await requestService.postData(urlRequest: request, data: dataToSend)
 
     }
 

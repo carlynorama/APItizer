@@ -14,13 +14,13 @@ import Foundation
 
 //MARK: Multipart Form Encoding
 //https://www.rfc-editor.org/rfc/rfc7578
-enum MultiPartFormEncoder {
+public enum MultiPartFormEncoder {
     
-    static func header(boundary:String) -> [String:String] {
+    public static func header(boundary:String) -> [String:String] {
         ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
     }
     
-    static func makeBodyData(formItems:Dictionary<String, CustomStringConvertible>, withTermination:Bool = true) throws -> (boundary:String, body:Data) {
+    public static func makeBodyData(formItems:Dictionary<String, CustomStringConvertible>, withTermination:Bool = true) throws -> (boundary:String, body:Data) {
         let boundary = "Boundary--\(UUID().uuidString)"
         var bodyData = Data()
         for (key, value) in formItems {
@@ -33,14 +33,14 @@ enum MultiPartFormEncoder {
     }
 
     //Media uploads will fail if fileName is not included, regardless of MIME/Type.
-    static func makeBodyData(stringItems:Dictionary<String, CustomStringConvertible>, dataAttachments:[String:(fileName:String, data:Data, mimeType:String)], withTermination:Bool = true) throws -> (boundary:String, body:Data) {
+    public static func makeBodyData(stringItems:Dictionary<String, CustomStringConvertible>, attachments:[String:Attachable], withTermination:Bool = true) throws -> (boundary:String, body:Data) {
         let boundary = "Boundary--\(UUID().uuidString)"
         var bodyData = Data()
         for (key, value) in stringItems {
             bodyData = try appendTextField(data: bodyData, label: key, value: String(describing: value), boundary: boundary)
         }
 
-        for (key, value) in dataAttachments {
+        for (key, value) in attachments {
             bodyData = try appendDataField(data: bodyData, label: key, dataToAdd: value.data, mimeType: value.mimeType, fileName: value.fileName, boundary: boundary)
         }
         

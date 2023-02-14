@@ -8,32 +8,32 @@
 import Foundation
 
 
-enum URLMaker {
+public enum URLMaker {
     
-    static func urlAssembler(_ pathParts:[String]) -> URL? {
+    public static func urlAssembler(_ pathParts:[String]) -> URL? {
         return URL(string:assemblePath(pathParts, prependSeparator: false))
     }
     
-    static func urlAssembler(_ pathParts:String...) -> URL? {
+    public static func urlAssembler(_ pathParts:String...) -> URL? {
         return URL(string:assemblePath(pathParts, prependSeparator: false))
     }
 
-    static func pathAssembler(_ pathParts:String...) -> String? {
+    public static func pathAssembler(_ pathParts:String...) -> String? {
         return URL(string:assemblePath(pathParts))?.absoluteString
     }
     
-    static func pathAssembler(_ pathParts:[String]) -> String? {
+    public static func pathAssembler(_ pathParts:[String]) -> String? {
         return URL(string:assemblePath(pathParts))?.absoluteString
     }
 
-    static func urlAssembler(url:URL, _ pathParts:String...) -> URL? {
+    public static func urlAssembler(url:URL, _ pathParts:String...) -> URL? {
        let urlString = url.absoluteString
         var mPathParts = pathParts
         mPathParts.insert(urlString, at:0)
         return URL(string:assemblePath(mPathParts, prependSeparator: false))
     }
 
-    static func urlAssembler(baseString:String, _ pathParts:String...) -> URL? {
+    public static func urlAssembler(baseString:String, _ pathParts:String...) -> URL? {
         var mPathParts = pathParts
         mPathParts.insert(baseString, at:0)
         return URL(string:assemblePath(mPathParts, prependSeparator: false))
@@ -51,9 +51,9 @@ enum URLMaker {
     }
 
 
-    static func urlFromPath(scheme:String = "https", host:String, path:String, port:Int? = nil) throws -> URL {
+    public static func urlFromPath(scheme:String = "https", host:String, path:String, port:Int? = nil) throws -> URL {
         var components = URLComponents()
-        components.scheme = "https"
+        components.scheme = scheme
         components.host = host
         if let port  { components.port = port }
 
@@ -65,9 +65,9 @@ enum URLMaker {
         return url
     }
 
-    static func urlFromPathComponents(scheme:String = "https", host:String, components pathParts:[String], port:Int? = nil) throws -> URL {
+    public static func urlFromPathComponents(scheme:String = "https", host:String, components pathParts:[String], port:Int? = nil) throws -> URL {
         var components = URLComponents()
-        components.scheme = "https"
+        components.scheme = scheme
         components.host = host
         if let port  { components.port = port }
 
@@ -81,20 +81,21 @@ enum URLMaker {
 
 
 
-    static func urlFromEndpoint(scheme:String = "https", host:String, apiBase:String = "", endpoint:Endpoint, port:Int? = nil) throws -> URL {
+    public static func urlFromEndpoint(scheme:String = "https", host:String, apiBase:String = "", endpoint:Endpoint, port:Int? = nil) throws -> URL {
         var components = URLComponents()
-        components.scheme = "https"
-        components.host = host
+        components.scheme = scheme
+        components.host = host.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         if let port  { components.port = port }
 
-        components.path = assemblePath([apiBase, endpoint.path], prependSeparator: false)
+        components.path = assemblePath([apiBase, endpoint.path], prependSeparator: true)
 
         if !endpoint.queryItems.isEmpty {
             components.queryItems = endpoint.queryItems
         }
         
+        //print("urlFromEndpoint")
         guard let url = components.url else {
-            print("components:\(components)")
+            print("urlFromEndpoint components:\(components)")
             throw APItizerError("Invalid url for endpoint")
         }
         return url

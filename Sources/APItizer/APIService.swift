@@ -37,7 +37,7 @@ public extension APIService {
 //        }
 //    }
     
-    func urlFromPath(path:String, prependBasePath:Bool = true) throws -> URL {
+    func urlFrom(path:String, prependBasePath:Bool = true) throws -> URL {
         var mPathParts = [path]
         if prependBasePath  {
             if let defaultBasePath  {
@@ -47,7 +47,7 @@ public extension APIService {
         return try URLMaker.urlFromPathComponents(scheme:serverScheme.component, host: serverHost.absoluteString, components: mPathParts, port:serverPort)
     }
 
-    func urlFromPathComponents(components pathParts:[String], prependBasePath:Bool = true) throws -> URL {
+    func urlFrom(components pathParts:[String], prependBasePath:Bool = true) throws -> URL {
         var mPathParts = pathParts
         if prependBasePath  {
             if let defaultBasePath  {
@@ -59,7 +59,7 @@ public extension APIService {
 
 
 
-    func urlFromEndpoint(endpoint:Endpoint, prependBasePath:Bool = true) throws -> URL {
+    func urlFrom(endpoint:Endpoint, prependBasePath:Bool = true) throws -> URL {
         var basePath = ""
         if prependBasePath  { basePath = defaultAPIBase ?? "" }
         return try URLMaker.urlFromEndpoint(scheme:serverScheme.component, host: serverHost.absoluteString, apiBase:basePath, endpoint:endpoint, port:serverPort)

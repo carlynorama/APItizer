@@ -17,22 +17,8 @@ public extension URLEncodable {
     func makeURLEncodedString() throws -> String {
         try URLEncoder.makeURLEncodedString(from: self)
     }
-
-    //
-    //    func makeURLEncodedData() throws -> Data {
-    //        return Data(try makeURLEncodedString().utf8)
-    //    }
-    //
-
-    //
-    //    private func urlEncode(_ queryItem: URLQueryItem) -> String {
-    //        let name = urlEncode(queryItem.name)
-    //        let value = urlEncode(queryItem.value ?? "")
-    //        return "\(name)=\(value)"
-    //    }
-    //
-    //    private func urlEncode(_ string: String) -> String {
-    //        let allowedCharacters = CharacterSet.alphanumerics
-    //        return string.addingPercentEncoding(withAllowedCharacters: allowedCharacters) ?? ""
-    //    }
+    
+    func makeURLEncodedData() throws -> Data {
+        return Data(try makeURLEncodedString().utf8)
+    }
 }

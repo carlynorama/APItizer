@@ -21,10 +21,102 @@ public extension APIService {
     
 }
 
+
+public extension APIService where Self:Authorizable {
+    
+    func makeAuthorizedGetRequest(url:URL, withAuth:Bool = true) throws -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        if withAuth { try addAuth(request: &request) }
+        return request
+    }
+    
+    func fetchData(from url:URL, withAuth:Bool = true) async throws -> Data {
+        let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+        let result = try await requestService.fetchData(for:request)
+        return result
+    }
+    
+    func fetchObject<T:Codable>(ofType:T.Type, from endPoint:Endpoint, withAuth:Bool = true) async -> T? {
+        do {
+            let url = try urlFrom(endpoint: endPoint)
+            let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+            let result = try await requestService.fetchData(for:request).asValue(ofType: ofType)
+            //print(result)
+            return result
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+    
+    //MARK: Generic Object Fetcher
+    
+    func fetchObject<T:Codable>(ofType:T.Type, from url:URL, withAuth:Bool = true) async -> T? {
+        do {
+            let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+            let result = try await requestService.fetchData(for:request).asValue(ofType: ofType)
+            //print(result)
+            return result
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+    
+    
+    func fetchCollectionOfOptionals<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL, withAuth:Bool = true) async throws -> [SomeDecodable?] {
+        let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+        return try await requestService.fetchData(for:request).asCollectionOfOptionals(ofType: ofType)
+    }
+    
+    func fetchDictionary(from url:URL, withAuth:Bool = true) async throws -> [String: Any]? {
+        let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+        return try await requestService.fetchData(for:request).asDictionary()
+    }
+    
+    func fetchValue<SomeDecodable: Decodable>(
+        ofType:SomeDecodable.Type,
+        from url:URL,
+        withAuth:Bool = true,
+        decoder:JSONDecoder = JSONDecoder()) async throws -> SomeDecodable {
+            let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+            return try await requestService.fetchData(for:request).asValue(ofType: ofType, decoder:decoder)
+    }
+    
+    func fetchTransformedValue<SomeDecodable: Decodable, Transformed>(
+        ofType: SomeDecodable.Type,
+        from url:URL,
+        withAuth:Bool = true,
+        transform: @escaping (SomeDecodable) throws -> Transformed
+    ) async throws -> Transformed {
+        let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+        return try await requestService.fetchData(for:request).asTransformedValue(ofType: ofType, transform: transform)
+    }
+    
+    func fetchOptional<SomeDecodable: Decodable>(
+        ofType:SomeDecodable.Type,
+        from url:URL,
+        withAuth:Bool = true,
+        decoder:JSONDecoder = JSONDecoder()) async throws -> SomeDecodable? {
+            let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+            return try await requestService.fetchData(for:request).asOptional(ofType: ofType)
+    }
+    
+    func fetchCollection<SomeDecodable: Decodable>(
+        ofType:SomeDecodable.Type,
+        from url:URL,
+        withAuth:Bool = true
+    ) async throws -> [SomeDecodable?] {
+        let request = try makeAuthorizedGetRequest(url: url, withAuth: withAuth)
+        return try await requestService.fetchData(for:request).asCollection(ofType: ofType)
+    }
+}
+
 public extension APIService {
     func fetchObject<T:Codable>(ofType:T.Type, from endPoint:Endpoint) async -> T? {
         do {
-            let url = try urlFromEndpoint(endpoint: endPoint)
+            let url = try urlFrom(endpoint: endPoint)
             //print("URL for Instance Info: \(url)")
             let result = try await requestService.fetchData(from: url).asValue(ofType: ofType)
             //print(result)
@@ -34,11 +126,6 @@ public extension APIService {
         }
         return nil
     }
-    
-}
-
-
-public extension APIService {
     
     //MARK: Generic Object Fetcher
     
@@ -54,10 +141,6 @@ public extension APIService {
         return nil
     }
     
-    
-    
-}
-public extension APIService {
     func fetchCollectionOfOptionals<SomeDecodable: Decodable>(ofType:SomeDecodable.Type, from url:URL) async throws -> [SomeDecodable?] {
         try await requestService.fetchData(from: url).asCollectionOfOptionals(ofType: ofType)
     }
@@ -86,4 +169,5 @@ public extension APIService {
         try await requestService.fetchData(from: url).asCollection(ofType: ofType)
     }
 }
+
 

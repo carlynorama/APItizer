@@ -16,4 +16,8 @@ public struct Endpoint {
         self.path = path
         self.queryItems = queryItems
     }
+    
+//    mutating public func setQueryItems(from:QueryEncodable) {
+//        queryItems = from.makeQueries()
+//    }
 }

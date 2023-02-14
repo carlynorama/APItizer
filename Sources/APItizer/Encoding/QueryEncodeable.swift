@@ -12,9 +12,6 @@ import Foundation
 
 public protocol QueryEncodable:Encodable {
     func makeQueries() -> [URLQueryItem]
-    
-    //use with "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
-    func makeURLEncodedData() throws -> Data
 }
 
 public extension QueryEncodable {

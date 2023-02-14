@@ -40,11 +40,11 @@ public struct Authentication {
         
         let dataOut = KeyChainHandler.readAccessToken(service: serviceKey, account: accountKey)
         if let dataOut {
-            //print("found it.")
+            print("found it.")
             EnvironmentLoading.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
         } else {
-            //print("did not find it.")
-           throw AuthorizableError("Could not locate access token in keychain.")
+            print("did not find it.")
+            throw AuthorizableError.noTokenKeychain
         }
         
         return Self(account: account, service: service, tokenKey: tokenKey)
@@ -62,7 +62,7 @@ public struct Authentication {
             //}
             tokenString = ProcessInfo.processInfo.environment[tokenKey]
             if (tokenString == nil) {
-                throw AuthorizableError("Unable to find a token in the environment.")
+                throw AuthorizableError.noTokenEnv
             }
         }
         return Self(account:accountName, service:service, tokenKey: tokenKey)
@@ -103,22 +103,24 @@ public struct Authentication {
 //    }
     
     static func loadIntoEnvironment(url:URL? = nil) throws {
-        do {
             if let url { try EnvironmentLoading.loadSecretsFile(url:url) }
             else { try EnvironmentLoading.loadDotEnv() }
-        } catch {
-            throw AuthorizableError(error.localizedDescription)
-        }
     }
 }
 
 
 extension Authentication {
     
+    public var hasStoredToken:Bool {
+        if let _ = try? fetchToken() {
+            return true
+        } else { return false }
+    }
+    
     func fetchToken() throws -> String {
         //print("\(tokenKey)")
         guard let token = ProcessInfo.processInfo.environment[tokenKey] else {
-            throw AuthorizableError("No token in environment")
+            throw AuthorizableError.noTokenEnv
         }
         return token
     }

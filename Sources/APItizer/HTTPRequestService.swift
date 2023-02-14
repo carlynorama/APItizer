@@ -10,6 +10,7 @@ import Foundation
 
 
 public struct HTTPRequestService:RequestService {
+    
 //    public enum Method: String {
 //        case delete = "DELETE", get = "GET", head = "HEAD", patch = "PATCH", post = "POST", put = "PUT"
 //    }
@@ -29,7 +30,6 @@ public struct HTTPRequestService:RequestService {
 extension HTTPRequestService {
     
     public func serverHello(from url:URL) async throws -> String {
-        
         var request = URLRequest(url: url)
         if let defaultTimeOut { request.timeoutInterval = defaultTimeOut }
         let (_, response) = try await session.data(for: request)  //TODO: catch the error here
@@ -40,37 +40,41 @@ extension HTTPRequestService {
             return ("Not in success range, \(httpResponse.statusCode), \(String(describing:httpResponse.mimeType))")
             //handleServerError(httpResponse)
         }
-
     }
 
     public func fetchData(from url:URL) async throws -> Data {
-        var request = URLRequest(url: url)
-        if let defaultTimeOut { request.timeoutInterval = defaultTimeOut }
-        
-        let (data, response) = try await session.data(from: url)
-        
-        //TODO: What if it's not HTTP?
-        let httpResponse = response as! HTTPURLResponse
-        guard (200...299).contains(httpResponse.statusCode) else {
-            print("Not in success range, \(httpResponse.statusCode), \(String(describing:httpResponse.mimeType))")
-            //handleServerError(httpResponse)
-            throw HTTPRequestServiceError("getData: No data")
-        }
-        return data
+        return try await fetchData(for: URLRequest(url: url))
     }
 
     public func fetchRawString(from url:URL, encoding:String.Encoding = .utf8) async throws -> String {
-        var request = URLRequest(url: url)
+        return try await fetchRawString(for: URLRequest(url: url), encoding: encoding)
+    }
+    
+    public func fetchData(for urlRequest: URLRequest) async throws -> Data {
+        var request = urlRequest
         if let defaultTimeOut { request.timeoutInterval = defaultTimeOut }
         
-        let (data, response) = try await session.data(from: url)
+        let (data, response) = try await session.data(for: request)
         
         //TODO: What if it's not HTTP?
         let httpResponse = response as! HTTPURLResponse
         guard (200...299).contains(httpResponse.statusCode) else {
-            print("Not in success range, \(httpResponse.statusCode), \(String(describing:httpResponse.mimeType))")
             //handleServerError(httpResponse)
-            throw HTTPRequestServiceError("getData: No data")
+            throw HTTPRequestServiceError("Not in success range, \(httpResponse.statusCode), \(String(describing:httpResponse.mimeType))")
+        }
+        return data
+    }
+    
+    public func fetchRawString(for urlRequest: URLRequest, encoding: String.Encoding) async throws -> String {
+        var request = urlRequest
+        if let defaultTimeOut { request.timeoutInterval = defaultTimeOut }
+        
+        let (data, response) = try await session.data(for: request)
+        //TODO: What if it's not HTTP?
+        let httpResponse = response as! HTTPURLResponse
+        guard (200...299).contains(httpResponse.statusCode) else {
+            //handleServerError(httpResponse)
+            throw HTTPRequestServiceError("Not in success range, \(httpResponse.statusCode), \(String(describing:httpResponse.mimeType))")
         }
         guard let string = String(data: data, encoding: encoding) else {
             throw HTTPRequestServiceError("Got data, couldn't make a string with \(encoding)")

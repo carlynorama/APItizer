@@ -12,11 +12,11 @@ import Foundation
 public enum URIScheme {
     case https
     
-    var component:String {
+    public var component:String {
         "https"
     }
     
-    var reccomendedRequestService:RequestService {
+    public var reccomendedRequestService:RequestService {
         HTTPRequestService()
     }
 }
