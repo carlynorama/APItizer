@@ -10,7 +10,7 @@
 import Foundation
 
 public protocol Authorizable {
-    var authentication:Authentication? { get }
+    var authentication:Authentication? { get } //<- am I who I say I am. 
     var hasValidToken:Bool { get }
 }
 
@@ -76,6 +76,10 @@ public struct Authentication {
         
     }
     
+    func addBearerToken(to request: inout URLRequest) throws {
+        request.setValue("Bearer \(try fetchToken())", forHTTPHeaderField: "Authorization")
+    }
+    
     static func secretPushToKeychain(account:String, service:String, keyBase:String = Authentication.defaultKeyBase, token:String) throws {
         let accountKey = "\(keyBase)_\(account)"
         let serviceKey = "\(keyBase)_\(service)"
@@ -132,13 +136,6 @@ extension Authentication {
     public var serviceKey:String {
         "\(keyBase)_\(service)"
     }
-    
-//    public func appendAuthHeader(to dictionary:[String:String]) throws -> [String:String] {
-//        var copy = dictionary
-//        copy["Authorization"] = "Bearer \(try fetchToken())"
-//        return copy
-//    }
-    
     
     public func updateTokenInKeyChain(token:String) {
         let dataIn = Data(token.utf8)

@@ -14,15 +14,6 @@ import Foundation
 
 public extension APIService where Self:Authorizable {
     
-    func addAuth(request: inout URLRequest) throws {
-        print(self)
-        print("addAuth: hasValidToken \(self.hasValidToken)")
-        if let auth = self.authentication {
-            request.setValue("Bearer \(try auth.fetchToken())", forHTTPHeaderField: "Authorization")
-        } else {
-            throw AuthorizableError("No authorizations defined.")
-        }
-    }
 
 
     //using async upload, see APing for manual body example.
