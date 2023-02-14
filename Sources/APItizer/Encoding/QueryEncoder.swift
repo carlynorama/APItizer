@@ -8,10 +8,10 @@
 import Foundation
 
 
-enum QueryEncoder {
+public enum QueryEncoder {
     //Always ignores empty and nil values.
     //Arrays are of the forma key=v1,v2,v3
-    static func makeQueryItems(from itemToEncode:Encodable) -> [URLQueryItem] {
+    public static func makeQueryItems(from itemToEncode:Encodable) -> [URLQueryItem] {
         let encoder = JSONEncoder()
         func encode<T>(_ value: T) throws -> [String: Any] where T : Encodable {
             let data = try encoder.encode(value)
@@ -34,6 +34,16 @@ enum QueryEncoder {
         
         return queries
     }
+    
+    public static func arrayToQueryItems(baseStringForKey:String, array:[CustomStringConvertible]) -> [URLQueryItem] {
+        var queries:[URLQueryItem] = []
+        queries.reserveCapacity(array.count)
+        for item in array {
+            queries.append(URLQueryItem(name: "\(baseStringForKey)[]", value: String(describing: item)))
+        }
+        return queries
+    }
+    
 }
 
 

@@ -8,9 +8,9 @@
 import Foundation
 
 
-enum DictionaryEncoder {
+public enum DictionaryEncoder {
     
-    static func makeDictionary(from itemToEncode:Any) -> [String:String]? {
+    public static func makeDictionary(from itemToEncode:Any) -> [String:String]? {
         let mirror = Mirror(reflecting: itemToEncode)
         var dictionary:[String:String] = [:]
 
@@ -37,7 +37,7 @@ enum DictionaryEncoder {
 
 
         //Look at QueryEncoder for other clean up tasks.
-    static func makeDictionary(fromEncodable itemToEncode:Encodable) -> [String:String] {
+    public static func makeDictionary(fromEncodable itemToEncode:Encodable) -> [String:String] {
         let encoder = JSONEncoder()
         func encode<T>(_ value: T) throws -> [String: Any] where T : Encodable {
             let data = try encoder.encode(value)

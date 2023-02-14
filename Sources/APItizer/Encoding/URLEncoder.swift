@@ -9,18 +9,18 @@ import Foundation
 
 
 //MARK: URLEncoding
-enum URLEncoder {
+public enum URLEncoder {
     
     //URLEncoded
-    static var header:[String:String] {
+    public static var header:[String:String] {
         ["Content-Type": "application/x-www-form-urlencoded; charset=utf-8"]
     }
     
-    static func makeURLEncodedString(from itemToEncode:Encodable) throws -> String {
+    public static func makeURLEncodedString(from itemToEncode:Encodable) throws -> String {
         try makeURLEncodedString(queryItems:QueryEncoder.makeQueryItems(from: itemToEncode))
         }
     
-    static func makeURLEncodedString(formItems:Dictionary<String, CustomStringConvertible>) throws -> String {
+    public static func makeURLEncodedString(formItems:Dictionary<String, CustomStringConvertible>) throws -> String {
         var urlQueryItems:[URLQueryItem] = []
         for (key, value) in formItems {
             urlQueryItems.append(URLQueryItem(name:key, value:String(describing:value)))
@@ -28,7 +28,8 @@ enum URLEncoder {
         return try makeURLEncodedString(queryItems:urlQueryItems)
     }
     
-    static func makeURLEncodedString(queryItems:[URLQueryItem]) throws -> String {
+
+    public static func makeURLEncodedString(queryItems:[URLQueryItem]) throws -> String {
         let pieces = queryItems.map(urlEncode)
         let bodyString = pieces.joined(separator: "&")
         return bodyString
