@@ -4,7 +4,7 @@ If its generic interacting with an API server, it goes here.
 
 If it is specific to the servers actual API it goes... there.
 
-There are many Packages that are a better choices for underpinning an API Client in Swift. Much of what's here is more robustly executed in Vapor for example. This Package is mostly for prototyping working with a new API to learn about Swift / to going quickly.
+There are many Packages that are a better choices for underpinning an API Client in Swift. Much of what's here is more robustly executed in Vapor for example. This Package is mostly for prototyping working with a new API to learn about Swift / to get going quickly.
 
 See also [APIng](https://github.com/carlynorama/APIng), a command line tool used for quickly checking new functions that will end up in here.  
 
