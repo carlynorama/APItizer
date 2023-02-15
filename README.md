@@ -10,7 +10,7 @@ See also [APIng](https://github.com/carlynorama/APIng), a command line tool used
 
 For reference a review of common API types. 
 
-## HTTP Request-Respose APIs
+## HTTP Request-Response APIs
 
 Polling style of interactions. 
 
@@ -51,7 +51,7 @@ REST was a response to an older style, Remote Procedure Call APIs, which was abo
 ### GRAPHQL APIs
 - One endpoint. `http://server/api  { some_json }`
 - uses  POST (almost everything) GET (some things)
-- Client can be quite specific about the wanted data. Filter happend on the server. 
+- Client can be quite specific about the wanted data. Filter happened on the server. 
 - No need for versions
 - Some cons: Server complexity and server load is much higher, doesn't handle file uploads without "mutations"
 - Best when complex queries are the norm because large, sprawling and interrelated dataset.
