@@ -20,8 +20,16 @@ enum RequestServiceError:Error, CustomStringConvertible {
 }
 
 public protocol RequestService {
+    var scheme:URIScheme { get }
     func serverHello(from url:URL) async throws -> String
-    func fetchRawString(from:URL, encoding:String.Encoding) async throws -> String
-//    func checkForValidResponse(_ response: URLResponse) async -> (isValid:Bool, mimeType:String?)
-    func fetch(from url:URL) async throws -> Data
+    func fetchData(from url:URL) async throws -> Data
+    func fetchData(for urlRequest:URLRequest) async throws -> Data
+    func fetchRawString(from url:URL, encoding:String.Encoding) async throws -> String
+    func fetchRawString(for urlRequest:URLRequest, encoding:String.Encoding) async throws -> String
+    
+    func postData(urlRequest:URLRequest, data:Data) async throws -> Data
+    func postData(urlRequest:URLRequest) async throws -> Data
+
 }
+
+

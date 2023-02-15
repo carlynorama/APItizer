@@ -1,9 +1,10 @@
-////
-////  ContentView.swift
-////  HTMLTests
-////
-////  Created by Carlyn Maw on 10/30/22.
-////
+//
+//  APItizer
+//  https://github.com/carlynorama/APItizer
+//
+//  String+AttributedString.swift
+//  Created by Carlyn Maw on 10/30/22.
+//
 //
 import SwiftUI
 
@@ -55,32 +56,5 @@ public extension String {
         var string = AttributedString()
         string.append(link)
         return string
-    }
-}
-
-extension String {
-    func removingCharacters(in characters:CharacterSet) -> Self {
-        Self(self.unicodeScalars.filter {
-            !characters.contains($0)
-        })
-    }
-    func removingCharacters(in string:String) -> Self {
-        Self(self.unicodeScalars.filter {
-            !CharacterSet(charactersIn:string).contains($0)
-        })
-    }
-    
-    func replacingCharacters(in characters:CharacterSet, with newChar:Character) -> Self {
-        String(self.compactMap( {
-            CharacterSet(charactersIn: "\($0)").isSubset(of: characters)
-             ? newChar : $0
-        }))
-    }
-    
-    func replacingCharacters(in string:String, with newChar:Character) -> Self {
-        String(self.compactMap( {
-            CharacterSet(charactersIn: "\($0)").isSubset(of: CharacterSet(charactersIn:string))
-             ? newChar : $0
-        }))
     }
 }

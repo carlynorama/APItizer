@@ -1,7 +1,8 @@
 //
-//  File.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  Auth.swift
 //  Created by Carlyn Maw on 2/7/23.
 //
 
@@ -10,7 +11,7 @@
 import Foundation
 
 public protocol Authorizable {
-    var authentication:Authentication? { get }
+    var authentication:Authentication? { get } //<- am I who I say I am. 
     var hasValidToken:Bool { get }
 }
 
@@ -40,11 +41,11 @@ public struct Authentication {
         
         let dataOut = KeyChainHandler.readAccessToken(service: serviceKey, account: accountKey)
         if let dataOut {
-            //print("found it.")
-            DotEnv.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
+            print("found it.")
+            EnvironmentLoading.setEnvironment(key: tokenKey, value: String(data: dataOut, encoding: .utf8)!)
         } else {
-            //print("did not find it.")
-           throw APIError("Could not locate access token in keychain.")
+            print("did not find it.")
+            throw AuthorizableError.noTokenKeychain
         }
         
         return Self(account: account, service: service, tokenKey: tokenKey)
@@ -62,7 +63,7 @@ public struct Authentication {
             //}
             tokenString = ProcessInfo.processInfo.environment[tokenKey]
             if (tokenString == nil) {
-                throw APIError("Unable to find a token in the environment.")
+                throw AuthorizableError.noTokenEnv
             }
         }
         return Self(account:accountName, service:service, tokenKey: tokenKey)
@@ -70,16 +71,20 @@ public struct Authentication {
     
     static public func makeWithTokenInhand(token:String, account:String, service:String, keyBase:String = Authentication.defaultKeyBase) throws -> Self {
         let tokenKey = "\(keyBase)_\(account)_TOKEN"
-        DotEnv.setEnvironment(key: tokenKey, value: token)
+        EnvironmentLoading.setEnvironment(key: tokenKey, value: token)
         
         return Self(account:account, service:service, keyBase: keyBase, tokenKey: tokenKey)
         
     }
     
+    func addBearerToken(to request: inout URLRequest) throws {
+        request.setValue("Bearer \(try fetchToken())", forHTTPHeaderField: "Authorization")
+    }
+    
     static func secretPushToKeychain(account:String, service:String, keyBase:String = Authentication.defaultKeyBase, token:String) throws {
         let accountKey = "\(keyBase)_\(account)"
         let serviceKey = "\(keyBase)_\(service)"
-        let tokenKey = "\(keyBase)_\(account)_TOKEN"
+        //let tokenKey = "\(keyBase)_\(account)_TOKEN"
         
         let dataIn = Data(token.utf8)
         KeyChainHandler.saveAccessToken(dataIn, service: serviceKey, account: accountKey)
@@ -103,22 +108,24 @@ public struct Authentication {
 //    }
     
     static func loadIntoEnvironment(url:URL? = nil) throws {
-        do {
-            if let url { try DotEnv.loadSecretsFile(url:url) }
-            else { try DotEnv.loadDotEnv() }
-        } catch {
-            throw APIError(error.localizedDescription)
-        }
+            if let url { try EnvironmentLoading.loadSecretsFile(url:url) }
+            else { try EnvironmentLoading.loadDotEnv() }
     }
 }
 
 
 extension Authentication {
     
-    private func fetchToken() throws -> String {
+    public var hasStoredToken:Bool {
+        if let _ = try? fetchToken() {
+            return true
+        } else { return false }
+    }
+    
+    func fetchToken() throws -> String {
         //print("\(tokenKey)")
         guard let token = ProcessInfo.processInfo.environment[tokenKey] else {
-            throw APIError("No token in environment")
+            throw AuthorizableError.noTokenEnv
         }
         return token
     }
@@ -130,13 +137,6 @@ extension Authentication {
     public var serviceKey:String {
         "\(keyBase)_\(service)"
     }
-    
-    public func appendAuthHeader(to dictionary:[String:String]) throws -> [String:String] {
-        var copy = dictionary
-        copy["Authorization"] = "Bearer \(try fetchToken())"
-        return copy
-    }
-    
     
     public func updateTokenInKeyChain(token:String) {
         let dataIn = Data(token.utf8)

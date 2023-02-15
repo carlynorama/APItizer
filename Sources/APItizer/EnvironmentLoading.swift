@@ -1,13 +1,14 @@
 //
-//  File.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  EnvironmentLoading.swift
 //  Created by Carlyn Maw on 2/7/23.
 //
 
 import Foundation
 
-public enum DotEnv {
+public enum EnvironmentLoading {
     
     //should prefer ProcessInfo.processInfo.environment["KEY"]
     static func getEnvironmentVar(_ key: String) -> String? {
@@ -18,21 +19,35 @@ public enum DotEnv {
         setenv(key, value, overwrite ? 1 : 0)
     }
     
+
+//    TODO: Check about Bundle and Linux.
+//    public static func loadDotEnv() throws {
+//        if let url = Bundle.main.url(forResource: ".env", withExtension: nil) {
+//            try loadSecretsFile(url: url)
+//
+//        } else if let envString = try? String(contentsOf: URL(fileURLWithPath: ".env")) {
+//            loadIntoEnv(envString)
+//        } else {
+//            fatalError("can't find .env file.")
+//        }
+//    }
+    
+ 
+    
     public static func loadDotEnv() throws {
-        if let url = Bundle.main.url(forResource: ".env", withExtension: nil) {
-            try loadSecretsFile(url: url)
-            
-        } else if let envString = try? String(contentsOf: URL(fileURLWithPath: ".env")) {
+        if let envString = try? String(contentsOf: URL(fileURLWithPath: ".env")) {
             loadIntoEnv(envString)
         } else {
-            fatalError("can't find .env file.")
+            throw APItizerError("DotEnv loadDotEnv: cant find .env")
+            //fatalError("can't find .env file.")
         }
     }
     
+    
+    
     public static func loadSecretsFile(url:URL) throws {
-        //let url = URL(fileURLWithPath: ".env")
         guard let envString = try? String(contentsOf: url) else {
-           fatalError("no env file data")
+            throw APItizerError("DotEnv loadSecretsFile: cant find .env")
         }
         loadIntoEnv(envString)
     }
