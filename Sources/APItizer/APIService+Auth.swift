@@ -1,7 +1,8 @@
 //
-//  File.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  APIService+Auth.swift
 //  Created by Carlyn Maw on 2/14/23.
 //
 

@@ -1,9 +1,10 @@
-////
-////  ContentView.swift
-////  HTMLTests
-////
-////  Created by Carlyn Maw on 10/30/22.
-////
+//
+//  APItizer
+//  https://github.com/carlynorama/APItizer
+//
+//  String+AttributedString.swift
+//  Created by Carlyn Maw on 10/30/22.
+//
 //
 import SwiftUI
 

@@ -1,7 +1,8 @@
 //
-//  URIScheme.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  URIScheme.swift
 //  Created by Carlyn Maw on 2/13/23.
 //
 

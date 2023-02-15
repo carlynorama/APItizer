@@ -1,7 +1,8 @@
 //
-//  Errors.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  Errors.swift
 //  Created by Carlyn Maw on 10/30/22 as part of ActivityPubExplorer
 //
 

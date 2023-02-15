@@ -1,7 +1,8 @@
 //
-//  File.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  Data+Append.swift
 //  Created by Carlyn Maw on 2/13/23.
 //
 

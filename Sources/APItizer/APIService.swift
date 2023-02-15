@@ -1,9 +1,11 @@
 //
-//  MastodonAPI.swift
-//  ActivityPubExplorer
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
-//  Created by Labtanza on 10/30/22.
+//  APIService.swift
+//  Carlyn Maw 2022 Oct 30
 //
+
 
 import Foundation
 

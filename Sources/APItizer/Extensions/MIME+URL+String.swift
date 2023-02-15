@@ -1,7 +1,8 @@
 //
-//  File.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  MIME+URL+String.swift
 //  Created by Carlyn Maw on 2/11/23.
 //  https://stackoverflow.com/questions/31243371/path-extension-and-mime-type-of-file-in-swift
 

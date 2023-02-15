@@ -1,7 +1,8 @@
 //
-//  File.swift
-//  
+//  APItizer
+//  https://github.com/carlynorama/APItizer
 //
+//  URLEncodeable.swift
 //  Created by Carlyn Maw on 2/13/23.
 //
 
