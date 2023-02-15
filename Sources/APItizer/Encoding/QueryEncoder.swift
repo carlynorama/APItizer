@@ -41,10 +41,42 @@ public enum QueryEncoder {
         for item in array {
             queries.append(URLQueryItem(name: "\(baseStringForKey)[]", value: String(describing: item)))
         }
+
         return queries
     }
-    
 }
+
+// TODO: More complicated Arrays
+// Will require mirror.
+// https://stackoverflow.com/questions/14026539/can-i-append-an-array-to-formdata-in-javascript
+//
+//
+//        for (item, index) in array.enumerated() {
+//            //MIRROR for child.key in item
+//            queries.append(URLQueryItem(name: "\(baseStringForKey)[\(index)].\(child.key)", value: String(describing:child.value)))
+//        }
+//
+//    e.g.
+//    const data = new FormData();
+//    data.append('id', class.id);
+//    data.append('name', class.name);
+//
+//    class.people.forEach((person, index) => {
+//        data.append(`people[${index}].id`, person.id);
+//        data.append(`people[${index}].firstname`, person.firstname);
+//        data.append(`people[${index}].lastname`, person.lastname);
+//
+//        // Append images
+//        person.images.forEach((image, imageIndex) =>
+//            data.append(`people[${index}].images`, {
+//                name: 'image' + imageIndex,
+//                type: 'image/jpeg',
+//                uri: image,
+//            })
+//        );
+//    });
+//
+//}
 
 
 
