@@ -1,10 +1,10 @@
 # APItizer
 
-If its generic intereacting with an API server, it goes here.
+If its generic interacting with an API server, it goes here.
 
 If it is specific to the servers actual API it goes... there.
 
-There are many Packages that are a better choices for underpining an API Client in Swift. Much of what's here is more robustly executed in Vapor for example. This Package mostly gets used by me when prototyping working with a new API as repository for getting going quickly.
+There are many Packages that are a better choices for underpinning an API Client in Swift. Much of what's here is more robustly executed in Vapor for example. This Package mostly gets used by me when prototyping working with a new API as repository for getting going quickly.
 
 See also [APIng](https://github.com/carlynorama/APIng), a command line tool used for quickly checking new functions that will end up in here.  
 
@@ -74,5 +74,5 @@ REST was a response to an older style, Remote Procedure Call APIs, which was abo
 - server keeps connection open by one of the following 
     - server sets [transfer encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding) to chunked (non-browser clients).
     - [Server-Sent-Events](https://en.wikipedia.org/wiki/Server-sent_events) (browser clients)  The mime type for SSE is text/event-stream
-- No other protocols are necesssary, with native browser support.
+- No other protocols are necessary, with native browser support.
 - Bad for bidirectional communication or streams that would benefit from buffering. 
