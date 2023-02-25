@@ -6,6 +6,8 @@ If it is specific to the servers actual API it goes... there.
 
 There are many Packages that are a better choices for underpinning an API Client in Swift. Much of what's here is more robustly executed in Vapor for example. This Package is mostly for prototyping working with a new API to learn about Swift / to get going quickly.
 
+To use this in a project, Go to your project page / Signing & Capabilities / App Sandbox (Xcode 14) and then enable Outgoing Connections (Client) which will allow your app to make http calls.
+
 See also [APIng](https://github.com/carlynorama/APIng), a command line tool used for quickly checking new functions that will end up in here.  
 
 For reference a review of common API types. 

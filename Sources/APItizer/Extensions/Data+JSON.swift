@@ -84,7 +84,7 @@ public extension Data {
     }
     
     //from Ed
-    func verboseDecode<T:Decodable>(decoder:JSONDecoder = JSONDecoder()) -> T? {
+    func verboseDecode<T:Decodable>(decoder:JSONDecoder = JSONDecoder(), ofType:T.Type) -> T? {
         let data = self
     //    decoder.keyDecodingStrategy = .convertFromSnakeCase
       do {

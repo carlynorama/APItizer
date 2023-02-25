@@ -12,6 +12,8 @@
 
 import Foundation
 
+//TODO: move kechaing handling into URLSession Delegate? 
+
 
 public enum KeyChainHandler {
     
