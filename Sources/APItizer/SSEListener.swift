@@ -54,7 +54,8 @@ enum SSEListenerStatus {
     case open, connecting, closed
 }
 
-//This is a less useful because not using the original URLSession dataTask pattern to access the bytes.
+//Does NOT using the original URLSession session.dataTask pattern to access the bytes.
+//TODO: Refactor so can handle more than one request?
 public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelegate {
     private var urlRequest: URLRequest
     private var url:URL
@@ -86,7 +87,7 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
         sessionDataTask != nil
     }
     
-    public init(url:URL, urlSession:URLSession? = nil) {
+    public init(url:URL, urlSession:URLSession? = nil, authentication:Authentication? = nil) {
         //--------- SPEC
         //GET
         //Accept: text/event-stream
@@ -94,10 +95,8 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
         //Connection: keep-alive
         //--------- \SPEC
         self.url = url
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 300.0)
-        request.setValue("text/event-stream", forHTTPHeaderField:"Accept")
-        //request.setValue("no-cache", forHTTPHeaderField: "Cache-Control") //does this make a difference w/ Masotodon?
-        self.urlRequest = request
+        self.authentication = authentication
+        self.urlRequest = Self.prepURLRequest(url:url, auth:authentication)
         
         super.init()
         if urlSession != nil {
@@ -111,6 +110,22 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
     
     deinit {
         self.cancel()
+    }
+    
+    static func prepURLRequest(url:URL, auth:Authentication? = nil) -> URLRequest {
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 300.0)
+        request.setValue("text/event-stream", forHTTPHeaderField:"Accept")
+        //request.setValue("no-cache", forHTTPHeaderField: "Cache-Control") //does this make a difference w/ Masotodon?
+        do {
+            if auth != nil {
+                print("adding token")
+                try auth!.addBearerToken(to: &request)
+            } } catch {
+                //TODO: Make init failable? 
+                print("Auth failed for SSE.")
+            }
+
+        return request
     }
 
 
@@ -140,6 +155,12 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
         print("---------------- I HEARD IT \(String(describing: error))")
     }
     
+//    public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+//        
+//        print("Recieved challenge")
+//        return (URLSession.AuthChallengeDisposition.useCredential, nil)
+//    }
+    
     //Why the wrapper? Because not sure where I'll handle retries yet. 
     public func eventStream() ->  AsyncThrowingStream<SSEStreamEvent, Error> {
         makeEventStream()
@@ -153,6 +174,10 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
                 
                 if sessionDataTask != nil { sessionDataTask?.cancel() }
                 //status = .connecting
+                
+                //this is akin to URLSession.shared.dataTask(with: request) { data, response, error in } in that
+                //data, response and error are all handled HERE instead of by the delegate.
+                //print(self.urlRequest.allHTTPHeaderFields)
                 let (asyncBytes, response) = try await self.session.bytes(for: self.urlRequest, delegate: self)
 
                 
@@ -162,8 +187,8 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
                 
                
                 guard (200...299).contains(httpResponse.statusCode) else {
-                    print(httpResponse.statusCode)
-                    throw SSEListenerError("\(httpResponse.statusCode)")
+                    print(httpResponse, response)
+                    throw SSEListenerError("\(httpResponse.statusCode) ")
                 }
                 
                 self.sessionDataTask = asyncBytes.task
