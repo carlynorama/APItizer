@@ -26,7 +26,7 @@ extension AsyncSequence where Element == UInt8 {
                         if accumulator.isEmpty { continuation.yield("") }
                         else {
                             if let line = String(data: Data(accumulator), encoding: .utf8) { continuation.yield(line) }
-                            else { throw SSEListenerError("allLines: Couldn't make string from [UInt8] chunk") }
+                            else { throw APItizerError("allLines: Couldn't make string from [UInt8] chunk") }
                             accumulator = []
                         }
                     } else {
