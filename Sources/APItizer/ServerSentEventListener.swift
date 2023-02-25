@@ -22,6 +22,7 @@
 
 
 import Foundation
+//Uses extensions AsyncStream+AllLines and AsyncStream+InitIterator
 
 //TODO: These are terrible names. Implement dynamicmemberlookup
 public struct SSEStreamEvent:Hashable {
