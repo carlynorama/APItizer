@@ -11,7 +11,7 @@ import Foundation
 
 //This was written for the ServerSentEventListener.
 
-public extension AsyncSequence where Element == UInt8 {
+extension AsyncSequence where Element == UInt8 {
     //Works.
     //TODO: https://github.com/apple/swift-async-algorithms/blob/ed0b086089f4e9ac76b3cb6138f578c25e661f34/Sources/AsyncAlgorithms/AsyncBufferedByteIterator.swift
     var allLines_v1:AsyncThrowingStream<String, Error> {

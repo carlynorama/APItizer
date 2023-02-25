@@ -11,7 +11,7 @@ import Foundation
 
 //TODO: Is this in 5.8???
 //https://forums.swift.org/t/when-can-we-move-asyncsequence-forward/61991/2
-public extension AsyncStream {
+extension AsyncStream {
   init<S: AsyncSequence>(_ sequence: S) where S.Element == Element {
     var iterator: S.AsyncIterator?
     self.init {
