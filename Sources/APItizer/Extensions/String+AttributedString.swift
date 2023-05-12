@@ -6,7 +6,7 @@
 //  Created by Carlyn Maw on 10/30/22.
 //
 //
-import SwiftUI
+import Foundation
 
 // print(String(data: data, encoding: .utf8)!)
 
