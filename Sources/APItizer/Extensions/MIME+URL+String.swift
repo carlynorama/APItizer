@@ -7,7 +7,10 @@
 //  https://stackoverflow.com/questions/31243371/path-extension-and-mime-type-of-file-in-swift
 
 import Foundation
+import Foundation
+#if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers
+#endif
 
 extension NSURL {
     public func mimeType() -> String {
