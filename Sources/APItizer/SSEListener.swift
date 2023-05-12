@@ -19,8 +19,8 @@
 //The stream must then be parsed by reading everything line by line, with a U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair, a single U+000A LINE FEED (LF) character not preceded by a U+000D CARRIAGE RETURN (CR) character, and a single U+000D CARRIAGE RETURN (CR) character not followed by a U+000A LINE FEED (LF) character being the ways in which a line can end.
 //------------- \SPEC
 
-
-
+//TODO: Linuxify
+#if !os(Linux)
 import Foundation
 //Uses extensions AsyncStream+AllLines and AsyncStream+InitIterator
 
@@ -367,3 +367,4 @@ public class SSEListener: NSObject, URLSessionDataDelegate, URLSessionTaskDelega
     
 
 }
+#endif

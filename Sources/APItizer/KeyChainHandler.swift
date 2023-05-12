@@ -13,8 +13,9 @@
 import Foundation
 
 //TODO: move kechaing handling into URLSession Delegate? 
+//TODO: What's the option in linux? 
 
-
+#if !os(Linux)
 public enum KeyChainHandler {
     
     
@@ -78,3 +79,4 @@ public enum KeyChainHandler {
         return (result as? Data)
     }
 }
+#endif
