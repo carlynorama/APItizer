@@ -7,7 +7,10 @@
 //
 
 import Foundation
+import Foundation
+#if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers
+#endif
 
 public struct Attachment:Attachable {
     public var fileName: String
