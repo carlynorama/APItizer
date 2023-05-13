@@ -9,6 +9,9 @@
 //TODO Wrap KeyChain & Bundle items in #if availalbe
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public protocol Authorizable {
     var authentication:Authentication? { get } //<- am I who I say I am. 

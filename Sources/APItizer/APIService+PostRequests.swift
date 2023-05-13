@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 //TODO: Move meat over to request service?
 //The failed cases handling moved over, but wait until implementing a different
