@@ -11,30 +11,31 @@ import Foundation
 
 public enum DictionaryEncoder {
     
-    public static func makeDictionary(from itemToEncode:Any) -> [String:String]? {
-        let mirror = Mirror(reflecting: itemToEncode)
-        var dictionary:[String:String] = [:]
+    func makeDictionary(from itemToEncode:Any) -> [String:String]? {
+    let mirror = Mirror(reflecting: itemToEncode)
+    var dictionary:[String:String] = [:]
 
-        for child in mirror.children  {
-            if let key:String = child.label {
-                // print("key: \(key), value: \(child.value)")
-                // print(child.value)
-                // print(String(describing: child.value))
-                if child.value is ExpressibleByNilLiteral  {
-                    let typeDescription = object_getClass(child.value)?.description() ?? ""
-                    if !typeDescription.contains("Null") && !typeDescription.contains("Empty") {
+    for child in mirror.children  {
+        if let key:String = child.label {
+            //print("key: \(key), value: \(child.value)")
+            //print(child.value)
+            //print(String(describing: child.value))
+            if child.value is ExpressibleByNilLiteral  {
+                switch child.value {
+                    case Optional<Any>.none: print("Nil!")
+                    default: 
                         let (_, some) = Mirror(reflecting: child.value).children.first!
                         //print(some)
                         dictionary[key] = String(describing: some)
-                    }
-                } else {
-                    dictionary[key] = String(describing: child.value)
                 }
+            } else {
+                dictionary[key] = String(describing: child.value)
             }
-            else { print("No key.") }
-        }
-        return dictionary
+        } 
+        else { print("No key.") }
     }
+    return dictionary
+}
 
 
         //Look at QueryEncoder for other clean up tasks.
