@@ -32,6 +32,7 @@ public struct Authentication {
         self.tokenKey = tokenKey ?? "\(keyBase)_\(account)_TOKEN"
     }
     
+    #if !os(Linux)
     static public func makeFromKeyChain(account:String, service:String, keyBase:String = Authentication.defaultKeyBase) throws -> Self {
         let accountKey = "\(keyBase)\(account)"
         let serviceKey = "\(keyBase)\(service)"
@@ -50,6 +51,7 @@ public struct Authentication {
         
         return Self(account: account, service: service, tokenKey: tokenKey)
     }
+    #endif
     
     static public func makeFromEnvironment(accountName:String, service:String, tokenKey:String) throws -> Self {
 
@@ -81,6 +83,7 @@ public struct Authentication {
         request.setValue("Bearer \(try fetchToken())", forHTTPHeaderField: "Authorization")
     }
     
+    #if !os(Linux)
     static func secretPushToKeychain(account:String, service:String, keyBase:String = Authentication.defaultKeyBase, token:String) throws {
         let accountKey = "\(keyBase)_\(account)"
         let serviceKey = "\(keyBase)_\(service)"
@@ -89,6 +92,7 @@ public struct Authentication {
         let dataIn = Data(token.utf8)
         KeyChainHandler.saveAccessToken(dataIn, service: serviceKey, account: accountKey)
     }
+    #endif
 
 //   What are the use cases?
 //    static public func makeFromEnvironmentAddToKeyChain(accountName:String, service:String, tokenKey:String) throws -> Self {
@@ -137,11 +141,13 @@ extension Authentication {
     public var serviceKey:String {
         "\(keyBase)_\(service)"
     }
-    
+
+    #if !os(Linux)
     public func updateTokenInKeyChain(token:String) {
         let dataIn = Data(token.utf8)
         KeyChainHandler.saveAccessToken(dataIn, service: serviceKey, account: accountKey)
     }
+    
     
     private func readTokenFromKeyChain() -> String? {
         let dataOut = KeyChainHandler.readAccessToken(service: serviceKey, account: accountKey)
@@ -152,6 +158,7 @@ extension Authentication {
             return nil
         }
     }
+    #endif
     
 //    private func putTokenInEnvironment(token:String) {
 //        DotEnv.setEnvironment(key: tokenKey, value: token)
