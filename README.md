@@ -13,7 +13,8 @@ See also [APIng](https://github.com/carlynorama/APIng), a command line tool used
 
 ## Usage Notes
 
-- This libary is currently focused on supporting automations tools. It does not uses the a `URLSessionDelegate` to handle authentication challenges (yet?) because it assumes that a token will be retrievable from the environment. The token can be in the KeyChain, but it must be retrieved and prepared and added to the URLRequest before it is sent via the `Authorization` type. Nothing against the delegate pattern. I didn't know about it, and the challenge should never happen in my use case (Author will know if requesting private endpoint or not).  
+- This package is currently focused on supporting an automation tool. It does not uses the a `URLSessionDelegate` to handle authentication challenges (yet?) because it assumes that a token will be retrievable from the environment. The token can be in the KeyChain, but it must be retrieved and prepared and added to the URLRequest before it is sent via the `Authorization` type. Nothing against the delegate pattern. I didn't know about it, and the challenge should never happen in my use case (Author will know if requesting private endpoint or not and passed saved token accordingly).  
+- This package currently has ServerSentEvents but not WebSockets implemented. The current use case benefits from realtime listening, but not neccessarily from perfectly real time writting so websockets were tabled for a future date. 
 
 
 ## Common API types. 
